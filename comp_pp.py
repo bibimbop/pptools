@@ -95,8 +95,8 @@ class pgdp_file_text(pgdp_file):
 
     def load(self, filename):
         """Load the file"""
+        self.from_pgdp_rounds = filename.startswith('projectID')
         self.myfile.load_text(filename)
-
 
     def analyze(self):
         """Clean then analyse the content of a file. Decides if it is PP version,
@@ -118,7 +118,7 @@ class pgdp_file_text(pgdp_file):
     def convert(self):
         """Remove markers from the text."""
 
-        if True:
+        if self.from_pgdp_rounds:
             # Px or Fx From PGDP
             self.text = re.sub(r"-----File: \d+.png.*", '', self.text)
             self.text = self.text.replace("/*", '')
@@ -146,10 +146,6 @@ class pgdp_file_text(pgdp_file):
             if args.suppress_illustration_tags:
                 self.text = re.sub(r"\[Illustrations?:([^]]*?)\]", r'\1', self.text, flags=re.MULTILINE)
                 self.text = re.sub(r"\[Illustration\]", '', self.text)
-
-
-
-
 
         else:
             # Horizontal separation
@@ -849,7 +845,7 @@ def main():
     for i, fname in enumerate(args.filename):
 
         # Look for file type.
-        if fname.endswith('html') or fname.endswith('htm'):
+        if fname.endswith(('html', 'htm')):
             files[i] = pgdp_file_html()
 
         else:
@@ -914,15 +910,8 @@ def main():
         f.transform()
 
 
-    with open("/tmp/gfsgfs", "w") as f:
-        f.write(files[1].text)
-
     # Compare the two versions
     main_diff = compare_texts(files[0].text, files[1].text)
-
-#    for fn in files[0].footnotes:
-#        print(fn)
-#    raise
 
     fnotes_diff = ""
     if args.extract_footnotes:
