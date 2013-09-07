@@ -42,17 +42,28 @@ On Debian /  DUbuntu
 ~~~~~~~~~~~~~~~~~~~~
 
 To install on Linux (Debian or Ubuntu):
+::
+
   sudo apt-get install w3c-dtd-xhtml python3-lxml dwdiff
 
 tinycss and cssselect are not present on these distributions yet for
-python 3. They must be manually downloaded, built from source and
-installed.
+python 3. Use pip to install them. Fist install pip for python3 if
+it's not already installed:
+::
+
+  sudo apt-get install python3-pip
+
+then install the missing packages:
+::
+
+  pip3 install tinycss
+  pip3 install cssselect
 
 
-On anything else
-~~~~~~~~~~~~~~~~
+On anything else (Windows, OSX, ...)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-I don't know.
+No idea.
 
 
 Usage
