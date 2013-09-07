@@ -544,12 +544,11 @@ class pgdp_file_html(pgdp_file):
 
     def transform(self):
         """Transform html into text. Do a final cleanup."""
-#        self.text = etree.XPath("normalize-space(/)")(self.myfile.tree)
         self.text = etree.XPath("string(/)")(self.myfile.tree)
 
-        ff=open("compfilehtml.txt", "w")
-        ff.write(self.text)
-        ff.close()
+#        ff=open("compfilehtml.txt", "w")
+#        ff.write(self.text)
+#        ff.close()
 
         # Apply transform function to the main text
         for func in self.transform_func:
