@@ -589,10 +589,10 @@ def latin1_convert(text):
     text = text.replace('“', '"')
     text = text.replace('”', '"')
 
-    text = text.replace('in-4°', 'in-4o')
-    text = text.replace('in-8°', 'in-8o')
-    text = text.replace('in-f°', 'in-fo')
-    text = text.replace('º', '°')
+#    text = text.replace('in-4º', 'in-4o')
+#    text = text.replace('in-8º', 'in-8o')
+#    text = text.replace('in-fº', 'in-fo')
+    text = text.replace('º', 'o')
 
     return text
 
@@ -844,7 +844,7 @@ def main():
     # How to process ponctuation
     check_char(files, "’", "'") # curly quote to straight
     check_char(files, "‘", "'") # curly quote to straight
-    check_char(files, "º", "°") # ordinal to degree
+    check_char(files, "º", "o") # ordinal to letter o
     check_char(files, "–", "-") # ndash to regular dash
     check_char(files, "½", "-1/2")
     check_char(files, "¼", "-1/4")
