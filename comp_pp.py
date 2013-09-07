@@ -30,10 +30,6 @@ from functools import partial
 
 from helpers import sourcefile
 
-# File type
-FT_TXT = 1                      # PP text version
-FT_HTML = 3                     # PP html version or any html file
-
 
 def clear_element(element):
     """In an XHTML tree, remove all sub-elements of a given element.
@@ -95,8 +91,8 @@ class pgdp_file_text(pgdp_file):
 
     def load(self, filename):
         """Load the file"""
-        self.from_pgdp_rounds = filename.startswith('projectID')
         self.myfile.load_text(filename)
+        self.from_pgdp_rounds = self.myfile.basename.startswith('projectID')
 
     def analyze(self):
         """Clean then analyse the content of a file. Decides if it is PP version,
@@ -121,12 +117,12 @@ class pgdp_file_text(pgdp_file):
         if self.from_pgdp_rounds:
             # Px or Fx From PGDP
             self.text = re.sub(r"-----File: \d+.png.*", '', self.text)
-            self.text = self.text.replace("/*", '')
-            self.text = self.text.replace("*/", '')
-            self.text = self.text.replace("/#", '')
-            self.text = self.text.replace("#/", '')
-            self.text = self.text.replace("/P", '')
-            self.text = self.text.replace("P/", '')
+            self.text = self.text.replace("\n/*\n", '\n\n')
+            self.text = self.text.replace("\n*/\n", '\n\n')
+            self.text = self.text.replace("\n/#\n", '\n\n')
+            self.text = self.text.replace("\n#/\n", '\n\n')
+            self.text = self.text.replace("\n/P\n", '\n\n')
+            self.text = self.text.replace("\nP/\n", '\n\n')
 
             if args.ignore_format:
                 tmp = ''
@@ -502,16 +498,6 @@ class pgdp_file_html(pgdp_file):
                         element.tail = ']' + (element.tail or '') # closing tag
 
 
-
-        # Transform greek. Replace greek text by transliteration
-        # contained in the title attribute.  Surround by +.
-        for element in self.myfile.tree.iter(tag=etree.Element):
-            if element.attrib:
-                if 'lang' in element.attrib and element.attrib['lang'] == 'grc' and 'title' in element.attrib:
-                    element.text = '+' + element.attrib['title'] # opening tag
-                    element.tail = '+' + (element.tail or '')    # closing tag
-
-
     def extract_footnotes(self):
         # Find footnotes, then remove them
         if args.extract_footnotes:
@@ -574,21 +560,11 @@ class pgdp_file_html(pgdp_file):
             for func in self.transform_func:
                 fn[1] = func(fn[1])
 
-#        lines = textwrap.wrap(self.text)
-#        self.text = "\n".join(lines)
-
-
         # zero width space
         #if args.ignore_0_space:
         #    self.text = self.text.replace(chr(0x200b), "")
 
 
-        # temp
-        #self.text = self.text.replace("’", "'")
-        #self.text = self.text.replace("‘", "'")
-        #self.text = self.text.replace("“", '"')
-        #self.text = self.text.replace("”", '"')
-        #self.text = self.text.replace("_", ' ')
 
 
 def oelig_convert(convert_oelig, text):
