@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link href="kppvhh.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+
+	<h1>{{ myfile.basename }}</h1>
+
+	{# Duplicate lines #}
+	{% if dup.ranges %}
+
+      <h2>Duplicated lines</h2>
+	  <p>Note: only the first instance is displayed.</p>
+
+	  {% for entry in dup.ranges %}
+
+		<h3>Duplicated lines {{ entry[0] }} to line {{ entry[1] }}</h3>
+
+        <div class="box">
+
+          {% for i in range(entry[0], entry[1]+1) %}
+            {{ myfile.text[i-myfile.start-1] | e }}<br />
+		  {% endfor %}
+
+        </div>
+
+      {% endfor %}
+	{% endif %}
+
+  </body>
+</html>
+

@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link href="kppvhh.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+
+	<h1>{{ myfile.basename }}</h1>
+
+	{# Duplicate lines #}
+	{% if dup.ranges %}
+
+      <h2>Duplicated lines</h2>
+	  <p>Note: only the first instance is displayed.</p>
+
+	  {% for entry in dup.ranges %}
+
+		<h3>Duplicated lines {{ entry[0] }} to line {{ entry[1] }}</h3>
+
+        <div class="box">
+
+          {% for i in range(entry[0], entry[1]+1) %}
+            {{ myfile.text[i-myfile.start-1] | e }}<br />
+		  {% endfor %}
+
+        </div>
+
+      {% endfor %}
+	{% endif %}
+
+
+	{# Footnotes #}
+
+	<h2>Footnotes and their anchors</h2>
+
+	{# Ranges of footnotes found #}
+    {% if fn.fn_found %}
+
+      {% for regex, (fn_numerical, fn_non_numerical) in fn.fn_found.items() %}
+
+        <h3>Footnotes matching regex /<span class='regex'>{{ regex | e }}</span>/</h3>
+
+        <div class='box'>
+
+		{% if fn_numerical %}
+          <b>Numerical:</b>
+		  <ul>
+            {% for n in fn_numerical %}
+			  <li>{{ n }}</li>
+			{% endfor %}
+		  </ul>
+		{% endif %}
+
+		{% if fn_non_numerical %}
+          <b>Non numerical:</b>
+		  <ul>
+            {% for n in fn_non_numerical %}
+			  <li>{{ n }}</li>
+			{% endfor %}
+		  </ul>
+
+		{% endif %}
+
+		</div>
+
+      {% endfor %}
+
+    {% else %}
+
+	  <p>No footnotes found</p>
+
+    {% endif %}
+
+	{# Anchors found #}
+    <h3>Range(s) of footnote anchors found</h3>
+    {% if fn.anchor_ranges %}
+	  <div class='box'>
+		<ul>
+          {% for a in fn.anchor_ranges %}
+			<li>{{ a }}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	{% else %}
+      <p>None found</p>
+    {% endif %}
+
+	{# Non numerical footnotes, whose anchor was not found. #}
+	{% if fn.anchor_not_found %}
+
+	  <h3>Non numerical footnotes whose anchor was not found</h2>
+	  <div class='box'>
+		<ul>
+
+		  {% for a in fn.anchor_not_found %}
+			<li>{{ a }}</li>
+		  {% endfor %}
+
+		</ul>
+	  </div>
+	{% endif %}
+
+	{# spacing between blocks #}
+	<h2>Spacing between blocks</h3>
+	<div class='box'>
+	  <ul>
+		{% for myblock in misc.empty_lines_blocks %}
+		  <li>
+			{% for num in myblock %}
+			  {{ num }}
+			{% endfor %}
+		  </li>
+		{% endfor %}
+
+	  </ul>
+	</div>
+
+	{# Text headers #}
+	<h2>Main text headers</h3>
+	<div class='box'>
+	  <ul>
+		{% for title in misc.titles %}
+		  <li>{{ title }}</li>
+		{% endfor %}
+	  </ul>
+	</div>
+
+	{# Not enough/too many empty lines #}
+	{% if misc.empty_lines_errors %}
+	  <h2>Uncommon number of empty lines between blocks (not 1, 2 or 4)</h3>
+	  <div class='box'>
+		<ul>
+		  {% for (lineno, line) in misc.empty_lines_errors %}
+			<li>Line {{ lineno }}: {{ line | e }}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	{% endif %}
+
+	{# TABs #}
+	{% if misc.spaces_tab_errors %}
+	  <h2>TABs present</h3>
+	  <div class='box'>
+		<ul>
+		  {% for lineno in misc.spaces_tab_errors %}
+			<li>Line {{ lineno }}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	{% endif %}
+
+	{# Spaces #}
+	{% if misc.spaces_trailing_errors %}
+	  <h2>Trailing spaces</h3>
+	  <div class='box'>
+		<ul>
+		  {% for lineno in misc.spaces_trailing_errors %}
+			<li>Line {{ lineno }}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	{% endif %}
+
+	{# Report lines too long (more than 72 characters) #}
+	{% if misc.line_length_warning %}
+	  <h2>Long lines (more than 72 characters)</h3>
+	  <div class='box'>
+		<ul>
+		  {% for lineno, line, len in misc.line_length_warning %}
+			<li>Line {{ lineno }} (length {{ len }}): {{ line | e }}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	{% endif %}
+
+	{# Lines with stars #}
+	{% if misc.stars_warning %}
+	  <h2>Lines containing stars</h3>
+	   <div class='box'>
+		<ul>
+		  {% for lineno, line in misc.stars_warning %}
+			<li>Line {{ lineno }}: {{ line | e }}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	{% endif %}
+
+	{# Format markers #}
+	{% if misc.format_markers_warning %}
+	  <h2>Possible format markers left-over</h3>
+	  <div class='box'>
+		<ul>
+		  {% for lineno, line in misc.format_markers_warning %}
+			<li>Line {{ lineno }}: {{ line | e }}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	{% endif %}
+
+	{# Dates #}
+	{% if misc.dates_all %}
+	  <h2>All dates</h2>
+
+	  {% if misc.dates_year_max != -1 %}
+		<p>Years range: {{ misc.dates_year_min }} to {{ misc.dates_year_max }}</p>
+	  {% endif %}
+
+	  <div class='box'>
+		<ul>
+		  {% for date in misc.dates_all %}
+			<li>{{ date | e }}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+
+	  {% if misc.dates_invalid %}
+		<h3>Invalid dates</h3>
+		<div class='box'>
+		  <ul>
+			{% for date in misc.dates_invalid %}
+			  <li>{{ date | e }}</li>
+			{% endfor %}
+		  </ul>
+		</div>
+	  {% endif %}
+	{% endif %}
+
+    {# Misc regexes #}
+    {% if misc.misc_regex_result %}
+	  <h2>Regexes</h3>
+	  <div class='box'>
+	    <ul>
+		  {% for r in misc.misc_regex_result %}
+			<li>Line {{ r[2] }}: <b>{{ r[0] | e }}</b>: {{ r[1] | e}}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	{% endif %}
+
+  </body>
+</html>
+

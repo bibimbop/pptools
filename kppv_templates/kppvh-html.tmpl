@@ -1,0 +1,526 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+  <head>
+	<title>KPPVH result for {{ myfile.basename }}</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link href="kppvhh.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+
+	<h1>{{ myfile.basename }}</h1>
+
+	{% if not myfile.tree %}
+      <p>Error: could not parse the file as xhtml or html.</p>
+
+    {% else %}
+
+	  {# Version of xhtml #}
+
+	  {% set xhtml_versions = { 0:"HTML", 10: "XHTML v 1.0", 11: "XHTML v1.1" } %}
+      <p>This file is being analyzed as an {{ xhtml_versions[myfile.xhtml] }} document.<br />
+
+		{% if myfile.xhtml == 0 %}
+          Note: invalid XHTML documents will be analyzed as HTML.<br />
+          Note: that software is meant for XHTML, not HTML. Some remarks may be incorrect for HTML.
+		{% endif %}
+
+      </p>
+
+	  {# Various global document checks #}
+
+	  <h2>Overall document</h2>
+
+      {# Language #}
+      {% if x.document_lang or x.document_xmllang %}
+        <p>Document main language is <b>{{ (x.document_lang or x.document_xmllang) }}</b><br />
+
+		  {% if x.document_lang and x.document_xmllang and x.document_lang != x.document_xmllang %}
+            <span class='highlight'>The lang and xml:lang attributes differ</span><br />
+		  {% endif %}
+
+          {% if (myfile.xhtml == 0 or myfile.xhtml == 10) and not x.document_lang %}
+            <span class='highlight'>The lang attribute is missing in the <b>html</b> tag</span><br />
+		  {% endif %}
+
+		  {% if (myfile.xhtml == 10 or myfile.xhtml == 11) and not x.document_xmllang %}
+            <span class='highlight'>The xml:lang attribute is missing in the <b>html</b> tag</span><br />
+		  {% endif %}
+
+		</p>
+
+      {% else %}
+        {# Neither is set #}
+		{% set lang_string = { 11: '<html ..... xml:lang="en">',
+                               10: '<html ..... xml:lang="en" lang="en">',
+                                0:  '<html ..... lang="en">' } %}
+
+        <p>
+		  <span class='highlight'>Language not defined</span>.
+          Modify the <b>html</b> tag, with the proper language, like this:<br />
+		  {{ lang_string[myfile.xhtml] | e }}
+		</p>
+
+      {% endif %}
+
+	  {# Languages found throughout the document #}
+      {% if x.languages %}
+		<h3>Language(s) found in this document</h3>
+		<div class='box'>
+		  <ul>
+			{% for l in x.languages %}
+			  <li>
+				<b>{{ l }}</b>
+				{% if x.iana_languages[l] %}
+				  ({{ x.iana_languages[l]['Description'] }})
+				{% else %}
+				  (<span class='highlight'>not found in the IANA list</span>. See <a href="http://www.w3.org/International/articles/language-tags/">Language tags in HTML and XML</a> and the IANA list it refers to.)
+				{% endif %}
+			  </li>
+			{% endfor %}
+		  </ul>
+		</div>
+	  {% endif %}
+
+	  {# lang elements tags #}
+      {% if myfile.xhtml != 0 and x.missing_xmllang %}
+        <h3>Elements with a <b>lang</b> attribute, missing an <b>xml:lang</b> attribute</h3>
+
+        <div class='box'>
+		  <ul>
+            {% for (lineno, tag) in x.missing_xmllang %}
+              <li>
+				Line {{ lineno }}: {{ tag }}
+			  </li>
+			{% endfor %}
+          </ul>
+		</div>
+	  {% endif %}
+
+      {% if myfile.xhtml != 11 and x.missing_lang %}
+        <h3>Elements with a <b>xml:lang</b> attribute, missing an <b>lang</b> attribute</h3>
+
+        <div class='box'>
+		  <ul>
+            {% for (lineno, tag) in x.missing_lang %}
+              <li>
+				Line {{ lineno }}: {{ tag }}
+			  </li>
+			{% endfor %}
+          </ul>
+		</div>
+	  {% endif %}
+
+      {% if x.different_lang %}
+        <h3>Elements declaring a different language in their <b>xml:lang</b> and <b>lang</b> attributes</h3>
+
+        <div class='box'>
+		  <ul>
+            {% for (lineno, tag) in x.different_lang %}
+              <li>
+				Line {{ lineno }}: {{ tag }}
+			  </li>
+			{% endfor %}
+          </ul>
+		</div>
+	  {% endif %}
+
+	  {# * inside sup #}
+	  {% if x.stars_in_sup %}
+		<h3>Text with stars inside <b>sup</b> tags. * are already superscripted. Compare * and <sup>*</sup>.</h3>
+        <div class='box'>
+		  <ul>
+			{% for lineno in x.stars_in_sup %}
+			  <li>Line {{ lineno }}</li>
+			{% endfor %}
+		  </ul>
+		</div>
+	  {% endif %}
+
+	  {# Text after sup #}
+	  {% if x.text_after_sup %}
+		<h3>Text after <b>sup</b> tag</h3>
+		<p>Note: sometimes it is a formating error, like in "1<sup>s</sup>t street"</p>
+
+        <div class='box'>
+		  <ul>
+			{% for lineno in x.text_after_sup %}
+			  <li>Line {{ lineno }}</li>
+			{% endfor %}
+		  </ul>
+		</div>
+	  {% endif %}
+
+	  {# Inline styles #}
+	  {% if x.inline_style %}
+		<h3>Tags with inline style. Should CSS be used instead?</h3>
+
+		<div class='box'>
+		  <ul>
+			{% for lineno, tag in x.inline_style %}
+			  <li>Line {{ lineno }}: tag <b>{{ tag }}</b></li>
+			{% endfor %}
+		  </ul>
+		</div>
+	  {% endif %}
+
+
+	  {# Title #}
+      <h2>Title of the book</h2>
+
+      {% if not x.good_format %}
+        <p>
+		  <span class='warning'>
+			The {{ "<title>" | e }} format is different than what PGDP or Project Gutenberg suggest.
+		  </span><br />
+          See <a href='http://www.pgdp.org/~jana/best-practices/pages/intro/html-css/#title-element'>PGPG's HTML Best Practices</a>
+		</p>
+	  {% endif %}
+
+	  {% if x.author and x.title %}
+        <div class='box'>
+          <dl>
+			<dt><b>Title:</b></dt>  <dd>{{ x.title | e }}</dd>
+			<dt><b>Author:</b></dt> <dd>{{ x.author | e }}</dd>
+		  </dl>
+		</div>
+	  {% endif %}
+
+
+	  {# CSS #}
+      {% if css.cssutils_errors or css.sel_unchecked or css.sel_unused or css.classes_undefined %}
+
+		<h2>CSS validation</h2>
+		<p>Note: some notes might be spurious, particularly when the selectors are complex. @media rules are also ignored.</p>
+
+		{# Direct errors #}
+        {% if css.cssutils_errors %}
+          <h3>CSS parser errors</h3>
+
+          <p>
+			Note: these could be errors in the CSS, however the CSS parser used by this tool doesn't fully support CSS 2.1 or 3. Confirm with the <a href='http://jigsaw.w3.org/css-validator/'>W3C CSS validator</a>.
+		  </p>
+
+		  <div class='box'>
+            {% for line in css.cssutils_errors %}
+              {{ line | e }} <br />
+			{% endfor %}
+
+          </div>
+		{% endif %}
+
+		{# Note about CSS that couldn't be checked #}
+        {% if css.sel_unchecked %}
+		  <h3>Some info</h3>
+          <p>
+			Note: this software cannot deal with the following selectors. This does not indicate an error with the CSS.
+		  </p>
+
+		  <div class='box'>
+			{% for sel in css.sel_unchecked %}
+			  {{ sel | e }} <br />
+			{% endfor %}
+		  </div>
+		{% endif %}
+
+		{# Unused CSS #}
+		{% if css.sel_unused %}
+          <h3>Unused CSS</h3>
+
+          <div class='box'>
+
+			{% for sel in css.sel_unused %}
+              {{ sel | e }} <br />
+		  {% endfor %}
+
+          </div>
+		{% endif %}
+
+		{# Undefined CSS #}
+		{% if css.classes_undefined %}
+          <h3>Undefined CSS</h3>
+
+          <div class='box'>
+			<dl>
+
+			  {% for lineno, myclass in css.classes_undefined %}
+
+				{# Highlight the class. If the word appears several times, too bad. #}
+				<dt>Line {{ lineno }}, selector <b>{{ myclass | e }}</b></dt>
+				<dd>{{ myfile.text[lineno-1] | e | replace(myclass, '<span class="highlight">' ~ myclass ~ '</span>') }}</dd>
+
+			  {% endfor %}
+
+			</dl>
+		  </div>
+		{% endif %}
+
+      {% endif %}
+
+
+	  {# Display ePub table of contents #}
+      <h2>Table of content as built by ePubmaker</h2>
+
+	  {% if x.num_h1 != 1 %}
+		<p>
+		  <span class="highlight">There should be exactly one h1 for ePub. {{ x.num_h1 }} were found.</span><br />
+          See <a href="http://www.pgdp.net/wiki/The_Proofreader%27s_Guide_to_EPUB#Table_Of_Contents">PGDP wiki</a>
+		</p>
+	  {% endif %}
+
+      {% if x.toc %}
+        <div class='box'>
+		  {% for level, title in x.toc %}
+            <div style='text-indent:{{ 2*level }}em'>{{ title }}</div>
+		  {% endfor %}
+        </div>
+	  {% else %}
+        <p>
+		  No table found. Is there any h1/h2/h3/h4 in that document?
+		</p>
+	  {% endif %}
+
+
+	  {# Images #}
+      <h2>Images</h2>
+
+      {# Presence and validity of the cover page #}
+      <h3>Cover image</h3>
+
+	  {% if not img.coverpage %}
+        <p>
+		  No cover image found.<br />
+          See <a href='http://www.pgdp.org/~jana/best-practices/pages/case-studies/images/#displayed-cover-image'>PGPG's HTML Best Practices</a>
+		</p>
+	  {% else %}
+        <p>
+		  Cover image is: <b>{{ img.coverpage }}</b>
+		</p>
+
+		{# Check the extension to see whether the image is a JPEG or not. #}
+        {% if img.coverpage_invalid_ext %}
+		  <p>
+			Invalid file extension. Must be ".jpg". Is the image a jpeg file?<br />
+            See <a href='http://www.pgdp.org/~jana/best-practices/pages/case-studies/images/#displayed-cover-image'>PGPG's HTML Best Practices</a>
+		  </p>
+		{% endif %}
+
+        {# Other errors #}
+        {% if img.errors %}
+          <h3>Image errors</h3>
+
+          <div class='box'>
+			<ul>
+            {% for (lineno, error) in img.errors %}
+			  <li>
+				{% if lineno %}
+				  Line {{ lineno }}: "
+				{% endif %}
+				{{ error }}
+			  </li>
+			{% endfor %}
+            </ul>
+		  </div>
+		{% endif %}
+	  {% endif %}
+
+
+	  {# Anchors #}
+      {% if x.different_id_name or x.missing_id or x.missing_name or x.bad_hrefs %}
+
+		<h2>Anchors</h2>
+
+        {# id != name#}
+        {% if x.different_id_name %}
+          <h3>Anchors with different <b>id</b> and <b>name</b></h3>
+
+          <div class='box'>
+			<ul>
+              {% for (lineno, attr_name, attr_id) in x.different_id_name %}
+                <li>Line {{ lineno }}: id=<b>{{ attr_id }}</b> -- name=<b>{{ attr_name }}</b></li>
+			  {% endfor %}
+            </ul>
+		  </div>
+		{% endif %}
+
+        {# Missing id #}
+        {% if x.missing_id %}
+          <h3>Anchors missing the <b>id</b> attribute</h3>
+
+          <div class='box'>
+			<ul>
+              {% for (lineno, attr_name) in x.missing_id %}
+                <li>Line {{ lineno }}: name=<b>{{ attr_name }}</b></li>
+			  {% endfor %}
+			</ul>
+		  </div>
+		{% endif %}
+
+        {# Missing name #}
+        {% if x.missing_name %}
+          <h3>Anchors missing the <b>name</b> attribute</h3>
+
+          <div class='box'>
+			<ul>
+              {% for (lineno, attr_id) in x.missing_name %}
+                <li>Line {{ lineno }}: id=<b>{{ attr_id }}</b></li>
+			  {% endfor %}
+			</ul>
+		  </div>
+		{% endif %}
+
+        {# Bad hrefs #}
+        {% if x.bad_hrefs %}
+          <h3>Anchors not found</h3>
+
+          <div class='box'>
+			<ul>
+			  {% for (lineno, href) in x.bad_hrefs %}
+                <li>Line {{ lineno }}: no href found for id/name <b>{{ href }}</b></li>
+			  {% endfor %}
+			</ul>
+		  </div>
+		{% endif %}
+
+		{# Unused anchor - don't display them #}
+        {% if x.unused_anchors %}
+          <p>
+			Note: there is {{ len(x.unused_anchors) }} unused anchors in the document.
+		  </p>
+		{% endif %}
+
+      {% endif %}
+
+
+	  {# Inconsistencies in internal links to a page number #}
+      {% if pages.inconsistencies %}
+	    <h2>Inconsistencies between links and page numbers</h2>
+
+        <div class='box'>
+		  <ul>
+			{% for lineno, href_num, text_num in pages.inconsistencies %}
+              <li>Line {{ lineno }}: href points to page <b>{{ href_num }}</b> while the anchor text says page <b>{{ text_num }}</b></li>
+			{% endfor %}
+          </ul>
+		</div>
+	  {% endif %}
+
+
+	  {# Footnotes #}
+      <h2>Footnotes</h2>
+
+	  {% if pages.note_anchors %}
+		{% set expected_num = 1 %}
+		{% for lineno, num in pages.note_anchors %}
+          {% if num != expected_num %}
+			<li>Line {{ lineno }}: expected footnote anchor <b>{{ expected_num }}</b>, found <b>{{ num }}</b></li>
+		  {% endif %}
+          {% set expected_num = num + 1 %}
+		{% endfor %}
+	  {% else %}
+        <p>
+		  None found
+		</p>
+	  {% endif %}
+
+	  {# Pages numbers #}
+	  <h2>Page numbers</h2>
+      <h3>Numerical Arabic</h3>
+	  {% if pages.ranges_num %}
+		<div class='box'>
+		  <ul>
+			{% for page_l, page_h, error in pages.ranges_num %}
+			  <li>
+				found pages <b>{{ page_l }}</b> to <b>{{ page_h }}</b>
+				{% if error %}
+				  <span class='highlight'>{{ error }}</span>
+				{% endif %}
+			  </li>
+			{% endfor %}
+          </ul>
+		</div>
+	  {% else %}
+		<p>None found.</p>
+	  {% endif %}
+
+      <h3>Numerical Roman</h3>
+	  {% if pages.ranges_roman %}
+		<div class='box'>
+		  <ul>
+			{% for page_l, page_h, error in pages.ranges_roman %}
+			  <li>
+				found pages <b>{{ page_l }}</b> to <b>{{ page_h }}</b>
+				{% if error %}
+				  <span class='highlight'>{{ error }}</span>
+				{% endif %}
+			  </li>
+			{% endfor %}
+          </ul>
+		</div>
+	  {% else %}
+		<p>None found.</p>
+	  {% endif %}
+
+
+	  {# Dot instead of comma #}
+	  {% if points.point_matches %}
+		<h2>Possible dot instead of comma. (duplicates, if any, were removed.)</h2>
+		<div class='box'>
+		  <ul>
+			{% for string in points.point_matches %}
+			  <li>
+				{{ string | e }}
+			  </li>
+			{% endfor %}
+          </ul>
+		</div>
+	  {% endif %}
+
+	  {# Greek #}
+	  {% if greek.bad_trans or greek.good_trans %}
+		<h2>Greek transliterrations</h2>
+		<p>Found {{ (greek.bad_trans + greek.good_trans) | length }} greek transliterations.</p>
+
+		{% if greek.bad_trans %}
+
+		  <p>Found {{ greek.bad_trans | length }} possible bad greek transliterations.</p>
+		  <p>Note: this tool is still a work in progress and may actually show false positives.</p>
+		  <p>First translitteration is the one found in the text, while the second is one made by this tool.</p>
+			<div class='box'>
+			  <ul>
+				{% for gtrans in greek.bad_trans %}
+				  <li>
+					{{ gtrans[0] | e }}
+					<ul>
+					  <li>{{ gtrans[1] | e }}</li>
+					  <li>{{ gtrans[2] | e }}</li>
+					</ul>
+				  </li>
+				{% endfor %}
+			  </ul>
+			</div>
+		  {% endif %}
+	  {% endif %}
+
+	  {# Misc regexes #}
+	  {% if x.misc_regex_result %}
+		<h2>Regexes</h3>
+		<div class='box'>
+	      <ul>
+			{% for r in x.misc_regex_result %}
+			  <li>Line {{ r[2] }}: <b>{{ r[0] | e }}</b>: {{ r[1] | e}}</li>
+			{% endfor %}
+		  </ul>
+		</div>
+	  {% endif %}
+
+
+
+    {% endif %}
+
+  </body>
+</html>
+

@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+  <head>
+	<title>KPPVH result for some book</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link href="kppvhh.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+
+	{% if pgdp.outname %}
+	  <p>
+		PGDP (Px or Fx): <a href="{{ pgdp.outname }}">{{ pgdp.basename }}</a>
+	  </p>
+	{% endif %}
+
+	{% if text.outname %}
+	  <p>
+		Texte version: <a href="{{ text.outname }}">{{ text.basename }}</a>
+	  </p>
+	{% endif %}
+
+	{% if html.outname %}
+	  <p>
+		HTML version: <a href="{{ html.outname }}">{{ html.basename }}</a>
+	  </p>
+	{% endif %}
+
+  </body>
+</html>
+
