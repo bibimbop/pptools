@@ -1,0 +1,61 @@
+SETUP
+=====
+
+Download the dwdiff binary from here:
+
+  https://dl.dropboxusercontent.com/u/94763902/misc/dwdiff
+
+Create a free account at https://www.pythonanywhere.com
+
+Open a "bash" session
+
+In the console, paste the following commands (one by one):
+
+  echo "PATH=\$PATH:pptools" >> .bashrc
+  git clone https://github.com/bibimbop/pptools.git
+  virtualenv-3.3 --system-site-packages myenv
+  source myenv/bin/activate
+  pip install tinycss
+
+On another browser tab, go to the "dashboard", and click on "files",
+then "pptools/", then "upload" and select the "dwdiff" binary
+previously downloaded.
+
+In the console, paste the following command:
+
+  chmod +x pptools/dwdiff
+
+Installation is done. Exit the bash console with ctrl-d
+
+
+USAGE
+=====
+
+Start a new "bash" console.
+
+Start the virtual environment (once):
+
+  source myenv/bin/activate
+
+Got to "dashboard", "files" and "upload" the 2 files to compare, and compare them:
+
+  comp_pp.py file1.txt file2.html > diff.html
+
+(You can also upload a zip file and use unzip to expand it.)
+
+There should be no output. Got to dashboard/files (refresh it if
+needed), and click on the download icon for diff.html to see the
+result. Do not click on the name itself as it will only display the
+source.
+
+That last step can be repeated as many times as necessary.
+
+
+
+
+
+
+
+
+
+
