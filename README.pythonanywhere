@@ -33,15 +33,17 @@ USAGE
 
 Start a new "bash" console.
 
-Start the virtual environment (once):
+Start the virtual environment (once per bash session):
 
   source myenv/bin/activate
 
-Got to "dashboard", "files" and "upload" the 2 files to compare, and compare them:
+Got to "dashboard", "files" and "upload" the 2 files to compare, and
+compare them:
 
   comp_pp.py file1.txt file2.html > diff.html
 
-(You can also upload a zip file and use unzip to expand it.)
+(You can also upload a zip file and use unzip to expand it; e.g. "unzip
+myfiles.zip").
 
 There should be no output. Got to dashboard/files (refresh it if
 needed), and click on the download icon for diff.html to see the
