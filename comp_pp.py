@@ -435,35 +435,35 @@ class pgdp_file_html(pgdp_file):
 #                    f_replace_regex = partial(re.sub, r"(\d)\u00A0(\d)", r"\1\2")
 #                    f_replace_regex = partial(re.sub, val.value[0].value, val.value[1].value)
 
-            # Iterate through each selectors in the rule
-            for selector in cssselect.parse(rule.selector.as_css()):
+                # Iterate through each selectors in the rule
+                for selector in cssselect.parse(rule.selector.as_css()):
 
-                pseudo_element = selector.pseudo_element
+                    pseudo_element = selector.pseudo_element
 
-                xpath = cssselect.HTMLTranslator().selector_to_xpath(selector)
-                find = etree.XPath(xpath)
+                    xpath = cssselect.HTMLTranslator().selector_to_xpath(selector)
+                    find = etree.XPath(xpath)
 
-                # Find each matching element in the HTML/XHTML document
-                for element in find(self.myfile.tree):
+                    # Find each matching element in the HTML/XHTML document
+                    for element in find(self.myfile.tree):
 
-                    # Replace text with content of an attribute.
-                    if f_replace_with_attr:
-                        element.text = f_replace_with_attr(element)
+                        # Replace text with content of an attribute.
+                        if f_replace_with_attr:
+                            element.text = f_replace_with_attr(element)
 
-                    if pseudo_element == "before":
-                        element.text = v_content + (element.text or '') # opening tag
-                    elif pseudo_element == "after":
-                        element.tail = v_content + (element.tail or '') # closing tag
+                        if pseudo_element == "before":
+                            element.text = v_content + (element.text or '') # opening tag
+                        elif pseudo_element == "after":
+                            element.tail = v_content + (element.tail or '') # closing tag
 
-                    if f_transform:
-                        self.text_apply(element, f_transform)
+                        if f_transform:
+                            self.text_apply(element, f_transform)
 
-                    if f_text_replace:
-                        self.text_apply(element, f_text_replace)
+                        if f_text_replace:
+                            self.text_apply(element, f_text_replace)
 
 
-                   # if f_replace_regex and element.text:
-                   #     element.text = f_replace_regex(element.text)
+                       # if f_replace_regex and element.text:
+                       #     element.text = f_replace_regex(element.text)
 
         return
 
