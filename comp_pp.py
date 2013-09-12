@@ -65,6 +65,9 @@ class pgdp_file(object):
         # Footnotes, if extracted
         self.footnotes = []
 
+        # First line of the text. This is where <body> is for html.
+        self.start_line = 0
+
 
     def load(self, filename):
         pass
@@ -97,6 +100,9 @@ class pgdp_file_text(pgdp_file):
     def analyze(self):
         """Clean then analyse the content of a file. Decides if it is PP version,
         a DP version, ..."""
+
+        # Remember which line the text started
+        self.start_line = self.myfile.start
 
         # Unsplit lines
         self.text = '\n'.join(self.myfile.text)
@@ -317,10 +323,12 @@ class pgdp_file_html(pgdp_file):
 
 
     def analyze(self):
-        """Clean then analyse the content of a file. Decides if it is PP version,
-        a DP version, ..."""
+        """Clean then analyse the content of a file."""
         # Empty the head - we only want the body
         self.myfile.tree.find('head').clear()
+
+        # Remember which line <body> was.
+        self.start_line = self.myfile.tree.find('body').sourceline
 
         # Remove PG footer, 1st method
         clear_after = False
@@ -596,6 +604,7 @@ def latin1_convert(text):
 
     return text
 
+
 def convert_to_words(text):
     """Split the text into a list of words from the text."""
 
@@ -650,7 +659,7 @@ def compare_texts(text1, text2):
 
 def create_html(files, text, footnotes):
 
-    def massage_input(text):
+    def massage_input(text, start0, start1):
         # Massage the input
         text = text.replace("&", "&amp;")
         text = text.replace("<", "&lt;")
@@ -663,12 +672,19 @@ def create_html(files, text, footnotes):
 
         text = text.replace("\n--", "\n</pre><hr /><pre>")
 
-        text = re.sub(r"^\s*(\d+):(\d+)", r"<span class='lineno'>\1 : \2</span>", text, flags=re.MULTILINE)
+        text = re.sub(r"^\s*(\d+):(\d+)",
+                      lambda m: "<span class='lineno'>{0} : {1}</span>".format(int(m.group(1)) + start0,
+                                                                               int(m.group(2)) + start1),
+                      text, flags=re.MULTILINE)
 
         return text
 
-    text = massage_input(text)
-    footnotes = massage_input(footnotes)
+    # Text, with correct (?) line numbers
+    text = massage_input(text, files[0].start_line, files[1].start_line)
+
+    # Footnotes - line numbers are meaningless right now. We could fix
+    # that.
+    footnotes = massage_input(footnotes, 0, 0)
 
     # Print header and CSS
     print("""
