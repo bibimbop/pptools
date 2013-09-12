@@ -328,7 +328,7 @@ class pgdp_file_html(pgdp_file):
         self.myfile.tree.find('head').clear()
 
         # Remember which line <body> was.
-        self.start_line = self.myfile.tree.find('body').sourceline
+        self.start_line = self.myfile.tree.find('body').sourceline - 2
 
         # Remove PG footer, 1st method
         clear_after = False
