@@ -626,6 +626,15 @@ def compare_texts(text1, text2):
     #    for line in difflib.unified_diff(f1.words, f2.words):
     #        print(line)
     # Use diff instead.
+
+    # Some debug code
+    #f = open("/tmp/text1", "w")
+    #f.write(text1)
+    #f.close()
+    #f = open("/tmp/text2", "w")
+    #f.write(text2)
+    #f.close()
+
     with tempfile.NamedTemporaryFile(mode='w') as t1, tempfile.NamedTemporaryFile(mode='w') as t2:
 
         t1.write(text1)
