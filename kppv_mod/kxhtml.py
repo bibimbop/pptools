@@ -19,7 +19,7 @@ XMLNS="{http://www.w3.org/XML/1998/namespace}"
 # List of language, indexed on the language tag, from
 #   http://www.iana.org/assignments/language-subtag-registry
 def load_languages():
-    with open(os.path.dirname(__file__) + "/../kppvh_misc/language-subtag-registry", "r") as f:
+    with open(os.path.dirname(__file__) + "/../kppv_misc/language-subtag-registry", "r") as f:
 
         languages={}
         current = {}
