@@ -122,7 +122,7 @@ class pgdp_file_text(pgdp_file):
 
         if self.from_pgdp_rounds:
             # Px or Fx From PGDP
-            self.text = re.sub(r"-----File: \d+.png.*", '', self.text)
+            self.text = re.sub(r"-----File: \w+.png.*", '', self.text)
             self.text = self.text.replace("\n/*\n", '\n\n')
             self.text = self.text.replace("\n*/\n", '\n\n')
             self.text = self.text.replace("\n/#\n", '\n\n')
@@ -148,6 +148,12 @@ class pgdp_file_text(pgdp_file):
             if args.suppress_illustration_tags:
                 self.text = re.sub(r"\[Illustrations?:([^]]*?)\]", r'\1', self.text, flags=re.MULTILINE)
                 self.text = re.sub(r"\[Illustration\]", '', self.text)
+
+            if args.suppress_proofers_notes:
+                self.text = re.sub(r"\[\*\*[^]]*?\]", '', self.text)
+
+            if args.regroup_split_words:
+                self.text = re.sub(r"(\w+)-\*(\n+)\*", r'\2\1', self.text)
 
         else:
             # Horizontal separation
@@ -679,7 +685,7 @@ def create_html(files, text, footnotes):
         text = text.replace("]COMPPP_START_INS[", "<span class='start_ins'>")
         text = text.replace("]COMPPP_STOP_INS[", "</span>")
 
-        text = text.replace("\n--", "\n</pre><hr /><pre>")
+        text = text.replace("\n--\n", "\n</pre><hr /><pre>\n")
 
         text = re.sub(r"^\s*(\d+):(\d+)",
                       lambda m: "<span class='lineno'>{0} : {1}</span>".format(int(m.group(1)) + start0,
@@ -687,6 +693,9 @@ def create_html(files, text, footnotes):
                       text, flags=re.MULTILINE)
 
         return text
+
+    # Find the number of diff sections
+    nb_diffs = len(re.findall("\n--\n", text))
 
     # Text, with correct (?) line numbers
     text = massage_input(text, files[0].start_line, files[1].start_line)
@@ -759,6 +768,8 @@ Inserted words that were in the second file but not in the first will appear <sp
 </div>
 
 """)
+
+    print("<p>There is " + str(nb_diffs) + " diff sections</p>")
 
     if footnotes:
         print("<p>Footnotes are diff'ed separately <a href='#footnotes'>here</a></p>")
@@ -961,6 +972,10 @@ if __name__ == '__main__':
                         help="HTML: Transform small caps into uppercase (U), lowercase (L) or title (T)")
     parser.add_argument('--css', type=str, default=[], action='append',
                         help="HTML: Insert transformation CSS")
+    parser.add_argument('--suppress-proofers-notes', action='store_true', default=False,
+                        help="In Px/Fx versions, remove [**proofreaders notes]")
+    parser.add_argument('--regroup-split-words', action='store_true', default=False,
+                        help="In Px/Fx versions, regoup split wo-* *rds")
 
     args = parser.parse_args()
 
