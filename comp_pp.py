@@ -177,9 +177,52 @@ class pgdp_file_text(pgdp_file):
         self.text = self.text.translate(transtab)
 
 
-    def extract_footnotes(self):
+    def extract_footnotes_pgdp(self):
+        # Extract the footnotes from an F round
+        # Start with [Footnote ... and finish with ] at the end of a line
 
-        # Extract footnotes - convert to lines and back
+        in_fnote = False        # currently processing a footnote
+        cur_fnote = []          # keeping current footnote
+        text = []               # new text without footnotes
+        blanc_cur = False       # current line is empty
+        indent_fnote = 0        # indentation of current footnote
+        for line in self.text.splitlines():
+
+            # New footnote
+            if "[Footnote" in line:
+
+                if in_fnote:
+                    raise "Error in text -- manual cleanup is needed"
+
+                if "*[Footnote" in line:
+                    # Join to previous - Remove the last from the existing
+                    # footnotes.
+                    line = line.replace("*[Footnote: ", "")
+                    cur_fnote, self.footnotes =  self.footnotes[-1],  self.footnotes[:-1]
+                else:
+                    cur_fnote = [-1, ""]
+
+                in_fnote = True
+
+            if in_fnote:
+                cur_fnote[1] = "\n".join([cur_fnote[1], line])
+
+                # Footnote continuation: ] or ]*
+                # We don't try to regroup yet
+                if line.endswith((']', "]*")):
+                    self.footnotes.append(cur_fnote)
+                    in_fnote = False
+
+            else:
+                text.append(line)
+
+        # Rebuild text, now without footnotes
+        self.text = '\n'.join(text)
+
+
+    def extract_footnotes_pp(self):
+        # Extract the footnotes from a PP text version
+        # Convert to lines and back
         in_fnote = False        # currently processing a footnote
         cur_fnote = []          # keeping current footnote
         text = []               # new text without footnotes
@@ -210,7 +253,7 @@ class pgdp_file_text(pgdp_file):
                 m = re.match("(\s*)\[Note (\d+): (.*)", line)
             #m = re.match("(\s*)\[(\d+): (.*)", line)
 
-            if m and m.group(2) == 'Illustration':
+            if m and (m.group(2) == 'Illustration' or m.group(2) == "Décoration"):
                 # An illustration, possibly inside a footnote. Treat
                 # as part of text or footnote.
                 m = None
@@ -263,6 +306,13 @@ class pgdp_file_text(pgdp_file):
 
         # Rebuild text, now without footnotes
         self.text = '\n'.join(text)
+
+
+    def extract_footnotes(self):
+        if self.from_pgdp_rounds:
+            self.extract_footnotes_pgdp()
+        else:
+            self.extract_footnotes_pp()
 
 
     def transform(self):
@@ -924,6 +974,13 @@ def main():
     # Compare the two versions
     main_diff = compare_texts(files[0].text, files[1].text)
 
+#    for fn1, fn2 in zip(files[0].footnotes, files[1].footnotes):
+#        print()
+#        print("==========================================")
+#        print(fn1[1])
+#        print()
+#        print(fn2[1])
+
     fnotes_diff = ""
     if args.extract_footnotes:
         if len(files[0].footnotes) != len(files[1].footnotes):
@@ -975,7 +1032,7 @@ if __name__ == '__main__':
     parser.add_argument('--suppress-proofers-notes', action='store_true', default=False,
                         help="In Px/Fx versions, remove [**proofreaders notes]")
     parser.add_argument('--regroup-split-words', action='store_true', default=False,
-                        help="In Px/Fx versions, regoup split wo-* *rds")
+                        help="In Px/Fx versions, regroup split wo-* *rds")
 
     args = parser.parse_args()
 
