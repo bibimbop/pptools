@@ -6,28 +6,53 @@
   <head>
 	<title>KPPVH result for some book</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <link href="kppvhh.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+
+body {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+h3 {
+	font-weight: normal;
+}
+
+/* Box for text */
+.box {
+	font-family: "Courier New",Courier,monospace;
+    border: 1px dashed;
+    background-color: #F0FFFF;
+}
+
+.regex {
+	background-color:lightyellow;
+	font-family: "Courier New",Courier,monospace;
+}
+
+.highlight {
+	background-color:#FF6633;	/* some orange */
+}
+
+.warning {
+    border: 1px dotted;
+    background-color: #FF6633;
+}
+    </style>
   </head>
 
   <body>
 
-	{% if pgdp.outname %}
-	  <p>
-		PGDP (Px or Fx): <a href="{{ pgdp.outname }}">{{ pgdp.basename }}</a>
-	  </p>
-	{% endif %}
+	{% for out in outdata %}
+	  <ul>
+	  <li>{{ out[0] }}</li>
+	  </ul>
+	{% endfor %}
 
-	{% if text.outname %}
-	  <p>
-		Texte version: <a href="{{ text.outname }}">{{ text.basename }}</a>
+	{% for out in outdata %}
+	  <hr />
+	  {{ out[1] }}
 	  </p>
-	{% endif %}
-
-	{% if html.outname %}
-	  <p>
-		HTML version: <a href="{{ html.outname }}">{{ html.basename }}</a>
-	  </p>
-	{% endif %}
+	{% endfor %}
 
   </body>
 </html>
