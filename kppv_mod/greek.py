@@ -36,8 +36,6 @@ class KGreekTrans(object):
                 # Special book - remove [Griech.: ...]
                 if title.startswith("[Griech.: "):
                     title = title[10:-1]
-                else:
-                    print (title)
 
                 greek_trans += [ ( element.xpath("string()" ), title) ]
 
@@ -52,7 +50,7 @@ class KGreekTrans(object):
         self.bad_trans = []
 
         for g in greek_trans:
-            print (g)
+
             # greek, transliteration, and expected transliteration
             # strip leading/trailing and double withe spaces
             grec = re.sub("\s+", " ", g[0].lstrip().rstrip())
