@@ -1,6 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# Copyright (C) 2012-2013 bibimbop at pgdp
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 """
  kppvh - performs some checking on PGDP or Project Gutenberg files.
 """
@@ -16,7 +32,6 @@ import subprocess
 import collections
 import unicodedata
 from lxml import etree
-from lxml.builder import E
 import io
 import roman
 
@@ -74,13 +89,8 @@ class Kppvh(object):
         dup.check_duplicates(myfile)
 
         # self.check_furtif(myfile)
-        out = template.render(myfile=myfile, dup=dup)
-
-        if myfile.outname == "stdout":
-            print(out)
-        else:
-            with open(myfile.outname, "w") as f:
-                f.write(out)
+        return (myfile.basename,
+                template.render(myfile=myfile, dup=dup))
 
 
     def process_text(self, myfile):
@@ -100,13 +110,8 @@ class Kppvh(object):
 
         # self.check_furtif(myfile)
 
-        out = template.render(myfile=myfile, dup=dup, fn=fn, misc=misc)
-
-        if myfile.outname == "stdout":
-            print(out)
-        else:
-            with open(myfile.outname, "w") as f:
-                f.write(out)
+        return (myfile.basename,
+                template.render(myfile=myfile, dup=dup, fn=fn, misc=misc))
 
 
     def process_html(self, myfile):
@@ -138,13 +143,8 @@ class Kppvh(object):
         grc = greek.KGreekTrans()
         grc.check_greek_trans(myfile)
 
-        out = template.render(myfile=myfile, x=x, css=css, img=img, pages=pgs, points=pts, greek=grc)
-
-        if myfile.outname == "stdout":
-            print(out)
-        else:
-            with open(myfile.outname, "w") as f:
-                f.write(out)
+        return (myfile.basename,
+                template.render(myfile=myfile, x=x, css=css, img=img, pages=pgs, points=pts, greek=grc))
 
 
 def main():
@@ -201,28 +201,28 @@ def main():
 
     kppvh = Kppvh()
 
+    outdata = []
+
     myfile_text = files.get('text', None)
     if myfile_text:
-        # Get a basename with no extension
-        myfile_text.outname = "kppvh_text_" + myfile_text.basename.split('.')[0] + ".html"
-        kppvh.process_text(myfile_text)
+        outdata.append(kppvh.process_text(myfile_text))
 
     myfile_html = files.get('html', None)
     if myfile_html:
-        myfile_html.outname = "kppvh_html_" + myfile_html.basename.split('.')[0] + ".html"
-        kppvh.process_html(myfile_html)
+        outdata.append(kppvh.process_html(myfile_html))
 
     myfile_pgdp = files.get('pgdp', None)
     if myfile_pgdp:
-        myfile_pgdp.outname = "kppvh_html_" + myfile_pgdp.basename.split('.')[0] + ".html"
-        kppvh.process_pgdp(myfile_pgdp)
+        outdata.append(kppvh.process_pgdp(myfile_pgdp))
+
 
     # Write all the nice report tree we've been building
     # todo - no need to call Environment several times
     jinja_env = Environment(loader=PackageLoader('kppvh', ''))
     template = jinja_env.get_template('kppv_templates/kppvh-main.tmpl')
 
-    out = template.render(pgdp=myfile_pgdp, text=myfile_text, html=myfile_html)
+    # Create output file
+    out = template.render(outdata=outdata)
     with open(args.outfile, "w") as f:
         f.write(out)
 
