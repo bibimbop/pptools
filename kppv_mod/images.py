@@ -6,6 +6,7 @@
 """
 
 import os
+import imghdr
 
 class KImages(object):
     """Check images. """
@@ -53,7 +54,7 @@ class KImages(object):
 
         # Check whether coverpage in jpeg
         if self.coverpage:
-            self.coverpage_invalid_ext = not (self.coverpage.endswith('.jpg') or self.coverpage.endswith('.jpeg'))
+            self.coverpage_invalid_ext = not self.coverpage.endswith(('.jpg', '.jpeg'))
 
         # Find images in body's <a>.
         elements = myfile.tree.findall('//a')
@@ -81,6 +82,21 @@ class KImages(object):
 
         img_files_set = set(img_files)
         images_set = set(images)
+
+        # Check extensions
+        for img in img_files_set:
+            imgtype = imghdr.what(os.path.join(myfile.dirname, img))
+
+            if imgtype is None:
+                 self.errors.append((0, "cannot detect image format for image " + img + "; is it really an image?"))
+
+            elif imgtype not in [ 'jpeg', 'png', 'gif' ]:
+                self.errors.append((0, "wrong(?) image format for image " + img + "; detected format is " + imgtype))
+
+            elif ((imgtype == 'jpeg' and not img.endswith(('.jpg', '.jpeg'))) or
+                (imgtype == 'png' and not img.endswith('.png')) or
+                (imgtype == 'gif' and not img.endswith('.gif'))):
+                self.errors.append((0, "wrong extension for image " + img + "; format is " + imgtype))
 
         for img in img_files_set - images_set:
             self.errors.append((0, "found extra image in images/ directory: " + img))
