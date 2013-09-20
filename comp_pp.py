@@ -990,7 +990,7 @@ def main():
             fnotes1 = []
             fnotes2 = []
             for fn1, fn2 in zip(files[0].footnotes, files[1].footnotes):
-                if fn1[0] != fn2[0]:
+                if fn1[0] != fn2[0] and fn1[0] != -1 and fn2[0] != -1:
                     print("FOOTNOTE ERROR: different footnote numbers -- %d and %d", (fn1[0], fn2[0]))
 
                 fnotes1 += [ fn1[1] ]
@@ -1019,8 +1019,8 @@ if __name__ == '__main__':
                         help='Ignore case when comparing')
     parser.add_argument('--extract-footnotes', action='store_true', default=False,
                         help='Extract and process footnotes separately')
-    parser.add_argument('--bold-str', type=str, default='=',
-                        help='HTML: replace <b> tags with this string (default "=")')
+#    parser.add_argument('--bold-str', type=str, default='=',
+#                        help='HTML: replace <b> tags with this string (default "=")')
     parser.add_argument('--ignore-0-space', action='store_true', default=False,
                         help='HTML: suppress zero width space (U+200b)')
     parser.add_argument('--suppress-nbsp-num', action='store_true', default=False,
