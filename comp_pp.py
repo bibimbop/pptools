@@ -19,6 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import re
+import sys
 import argparse
 import tempfile
 import subprocess
@@ -186,13 +187,14 @@ class pgdp_file_text(pgdp_file):
         text = []               # new text without footnotes
         blanc_cur = False       # current line is empty
         indent_fnote = 0        # indentation of current footnote
-        for line in self.text.splitlines():
+        for lineno, line in enumerate(self.text.splitlines()):
 
             # New footnote
             if "[Footnote" in line:
 
                 if in_fnote:
-                    raise "Error in text -- manual cleanup is needed"
+                    print("Error in text -- manual cleanup is needed around line " + str(lineno), file=sys.stderr)
+                    sys.exit()
 
                 if "*[Footnote" in line:
                     # Join to previous - Remove the last from the existing
@@ -722,7 +724,7 @@ def compare_texts(text1, text2):
         return p.stdout.read().decode('utf-8')
 
 
-def create_html(files, text, footnotes):
+def create_html(files, text, footnotes, footnotes_errors):
 
     def massage_input(text, start0, start1):
         # Massage the input
@@ -745,7 +747,8 @@ def create_html(files, text, footnotes):
         return text
 
     # Find the number of diff sections
-    nb_diffs = len(re.findall("\n--\n", text))
+    nb_diffs_text = len(re.findall("\n--\n", text))
+    nb_diffs_footnotes = len(re.findall("\n--\n", footnotes or ""))
 
     # Text, with correct (?) line numbers
     text = massage_input(text, files[0].start_line, files[1].start_line)
@@ -819,10 +822,20 @@ Inserted words that were in the second file but not in the first will appear <sp
 
 """)
 
-    print("<p>There is " + str(nb_diffs) + " diff sections</p>")
+    print("<p>There is " + str(nb_diffs_text) + " diff sections in the main text</p>")
 
     if footnotes:
         print("<p>Footnotes are diff'ed separately <a href='#footnotes'>here</a></p>")
+
+        print("<p>There is " + str(nb_diffs_footnotes) + " diff sections in the footnotes</p>")
+
+
+    if footnotes_errors:
+        print("<p>Error with footnotes numbering:</p>")
+        print("<ul>")
+        for err in footnotes_errors:
+            print("<li>" + err + "</li>")
+        print("</ul>")
 
     print("<h2 class='sep4'>Main text</h2>")
     print("<pre class='sep4'>")
@@ -982,23 +995,24 @@ def main():
 #        print(fn2[1])
 
     fnotes_diff = ""
+    fnotes_errors = []
     if args.extract_footnotes:
         if len(files[0].footnotes) != len(files[1].footnotes):
-            print("FOOTNOTE ERRORS: uneven number of footnotes -- %d and %d" % (len(files[0].footnotes), len(files[1].footnotes)))
+            fnotes_errors += [ "FOOTNOTE ERRORS: uneven number of footnotes: {0} and {1}. Footnotes diffs WILL NOT be displayed.".format(len(files[0].footnotes), len(files[1].footnotes)) ]
 
         else:
             fnotes1 = []
             fnotes2 = []
             for fn1, fn2 in zip(files[0].footnotes, files[1].footnotes):
                 if fn1[0] != fn2[0] and fn1[0] != -1 and fn2[0] != -1:
-                    print("FOOTNOTE ERROR: different footnote numbers -- %d and %d", (fn1[0], fn2[0]))
+                    fnotes_errors += [ "FOOTNOTE ERROR: different footnote numbers: {0} and {1}".format(fn1[0], fn2[0]) ]
 
                 fnotes1 += [ fn1[1] ]
                 fnotes2 += [ fn2[1] ]
 
             fnotes_diff = compare_texts("\n".join(fnotes1), "\n".join(fnotes2))
 
-    create_html(files, main_diff, fnotes_diff)
+    create_html(files, main_diff, fnotes_diff, fnotes_errors)
 
 
 if __name__ == '__main__':
