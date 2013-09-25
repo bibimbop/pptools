@@ -5,6 +5,8 @@ Download the dwdiff binary from here:
 
   https://dl.dropboxusercontent.com/u/94763902/misc/dwdiff
 
+  [The source for dwdiff is available at: http://os.ghalkes.nl/dwdiff.html]
+
 Create a free account at https://www.pythonanywhere.com
 
 Open a "bash" session
@@ -25,7 +27,21 @@ In the console, paste the following command:
 
   chmod +x pptools/dwdiff
 
-Installation is done. Exit the bash console with ctrl-d
+Installation is done. It is necessary at that point to exit the bash
+console, by pressing ctrl-d.
+
+These steps do not need to be repeated.
+
+
+UPDATING
+========
+
+From time to time, the sources in pptools/ might need to be
+updated. Inside a "bash" console, type:
+
+  cd pptools
+  git pull
+  cd ..
 
 
 USAGE
@@ -45,12 +61,13 @@ compare them:
 (You can also upload a zip file and use unzip to expand it; e.g. "unzip
 myfiles.zip").
 
-There should be no output. Got to dashboard/files (refresh it if
+There should be no output. Got to "dashboard"/"files" (refresh it if
 needed), and click on the download icon for diff.html to see the
 result. Do not click on the name itself as it will only display the
 source.
 
 That last step can be repeated as many times as necessary.
+
 
 
 
