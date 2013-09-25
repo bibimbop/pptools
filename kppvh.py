@@ -156,7 +156,7 @@ def main():
                         help='XHTML output file name',
                         default='kppvh.html')
 
-    parser.add_argument('filenames', metavar='FILENAMES', type=str,
+    parser.add_argument('filename', metavar='FILENAME', type=str,
                         help='input text file', nargs='+')
 
     args = parser.parse_args()
@@ -164,7 +164,7 @@ def main():
     # Keep the files. 1st=pgdp, 2nd=text, 3rd=xhtml
     files = {}
 
-    for fname in args.filenames:
+    for fname in args.filename:
 
         ftype = None
         basename = os.path.basename(fname)
