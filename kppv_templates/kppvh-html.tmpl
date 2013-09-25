@@ -528,6 +528,11 @@
 		</ul>
 	  </div>
 	{% endif %}
+  {% elif not greek.has_dchars %}
+	<h2>Greek transliterrations</h2>
+	<hr />
+
+	<p>Not tested — DChars module is not installed</p>
   {% endif %}
 
   {# Misc regexes #}

@@ -11,11 +11,22 @@ from itertools import count, groupby
 from lxml import etree
 import re
 
-from dchars.dchars import new_dstring
+try:
+    from dchars.dchars import new_dstring
+except Exception:
+    new_dstring = None
 
 class KGreekTrans(object):
 
     def check_greek_trans(self, myfile):
+
+        self.good_trans = []
+        self.bad_trans = []
+        self.has_dchars = (new_dstring != None)
+
+        if not self.has_dchars:
+            # DChars not installed
+            return
 
         greek_trans = []
 
@@ -46,8 +57,6 @@ class KGreekTrans(object):
                                 options = { "gutenberg:transliteration for upsilon" : "u or y",
                                             }
                                 )
-        self.good_trans = []
-        self.bad_trans = []
 
         for g in greek_trans:
 
