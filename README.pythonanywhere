@@ -15,7 +15,7 @@ In the console, paste the following commands (one by one):
   git clone https://github.com/bibimbop/pptools.git
   virtualenv-3.3 --system-site-packages myenv
   source myenv/bin/activate
-  pip install tinycss
+  pip install tinycss roman cssutils jinja2
 
 On another browser tab, go to the "dashboard", and click on "files",
 then "pptools/", then "upload" and select the "dwdiff" binary
