@@ -514,20 +514,20 @@
 	  <p>Found {{ greek.bad_trans | length }} possible bad greek transliterations.</p>
 	  <p>Note: this tool is still a work in progress and may actually show false positives.</p>
 	  <p>First translitteration is the one found in the text, while the second is one made by this tool.</p>
-		<div class='box'>
-		  <ul>
-			{% for gtrans in greek.bad_trans %}
-			  <li>
-				{{ gtrans[0] | e }}
-				<ul>
-				  <li>{{ gtrans[1] | e }}</li>
-				  <li>{{ gtrans[2] | e }}</li>
-				</ul>
-			  </li>
-			{% endfor %}
-		  </ul>
-		</div>
-	  {% endif %}
+	  <div class='box'>
+		<ul>
+		  {% for gtrans in greek.bad_trans %}
+			<li>
+			  {{ gtrans[0] | e }}
+			  <ul>
+				<li>{{ gtrans[1] | e }}</li>
+				<li>{{ gtrans[2] | e }}</li>
+			  </ul>
+			</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	{% endif %}
   {% endif %}
 
   {# Misc regexes #}

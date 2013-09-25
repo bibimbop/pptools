@@ -352,8 +352,9 @@ class KXhtml(object):
             if element.tail and element.tail[0].isalpha():
                 self.text_after_sup.append(element.sourceline)
 
-        # Find various strings in the content
         self.misc_regex_result = []
+
+        # Try to find various strings in the text
         strings = [ ("unusual punctuation", "[,:;][!?]"),
                     ("[oE]->[oe], [OE] or œ", "[oE]"),
                     ("[Oe]->[oe], [OE] or Œ", "[Oe]"),
@@ -362,7 +363,6 @@ class KXhtml(object):
                     ("[Blank Page]", "[Blank Page]"),
                     ("degré sign ?", "°"),
                     ("ordinal sign ?", "º"),
-                    ("use ndash instead ?", "\d-\d"),
                     ]
         for element in myfile.tree.find('body').iter():
             for desc, string in strings:
@@ -371,6 +371,25 @@ class KXhtml(object):
                 if element.tail and string in element.tail:
                     self.misc_regex_result.append((desc, element.tail, element.sourceline))
 
+        # Try various regexes on the text
+        text = etree.XPath("string(//body)")(myfile.tree)
+        regexes = [ ("mdash->dash(?)", "\d+--\d+"),
+                    ("mdash->dash(?)", "v\.--\d+"),
+                    ("mdash->dash(?)", "r\.--\d+"),
+                    (",letter", ",[^\W\d_]+"),
+                    ("bad guiguts find/replace?", r"\$\d[^\d][^ ]*\s"),
+                    ("use ndash instead ?", r"\d+-\d+"),
+                    ]
+        # Find all matches, and add them
+        for desc, regex in regexes:
+            m = re.findall(regex, text)
+            if m is None:
+                continue
+
+            for match in m:
+                self.misc_regex_result.append((desc, match, 0))
+
+        print(self.misc_regex_result)
 
     def check_anchors(self, myfile):
         """Perform check on anchors: id must be equal to name, find
