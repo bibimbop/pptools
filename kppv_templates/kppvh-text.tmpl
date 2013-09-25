@@ -1,9 +1,30 @@
-<h1><a href="#{{ myfile.basename }}">{{ myfile.basename }}</a></h1>
+{#
+ # -*- coding: utf-8 -*-
+
+ # Copyright (C) 2012-2013 bibimbop at pgdp
+
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License
+ # as published by the Free Software Foundation; either version 2
+ # of the License, or (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program; if not, write to the Free Software
+ # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#}
+
+<h1 id="{{ myfile.basename }}">{{ myfile.basename }}</h1>
 
 {# Duplicate lines #}
 {% if dup.ranges %}
 
   <h2>Duplicated lines</h2>
+  <hr />
   <p>Note: only the first instance is displayed.</p>
 
   {% for entry in dup.ranges %}
@@ -25,6 +46,7 @@
 {# Footnotes #}
 
 <h2>Footnotes and their anchors</h2>
+<hr />
 
 {# Ranges of footnotes found #}
 {% if fn.fn_found %}
@@ -81,7 +103,7 @@
 {# Non numerical footnotes, whose anchor was not found. #}
 {% if fn.anchor_not_found %}
 
-  <h3>Non numerical footnotes whose anchor was not found</h2>
+  <h3>Non numerical footnotes whose anchor was not found</h3>
   <div class='box'>
 	<ul>
 
@@ -95,6 +117,8 @@
 
 {# spacing between blocks #}
 <h2>Spacing between blocks</h2>
+<hr />
+
 <div class='box'>
   <ul>
 	{% for myblock in misc.empty_lines_blocks %}
@@ -110,6 +134,8 @@
 
 {# Text headers #}
 <h2>Main text headers</h2>
+<hr />
+
 <div class='box'>
   <ul>
 	{% for title in misc.titles %}
@@ -121,6 +147,8 @@
 {# Not enough/too many empty lines #}
 {% if misc.empty_lines_errors %}
   <h2>Uncommon number of empty lines between blocks (not 1, 2 or 4)</h2>
+  <hr />
+
   <div class='box'>
 	<ul>
 	  {% for (lineno, line) in misc.empty_lines_errors %}
@@ -133,6 +161,8 @@
 {# TABs #}
 {% if misc.spaces_tab_errors %}
   <h2>TABs present</h2>
+  <hr />
+
   <div class='box'>
 	<ul>
 	  {% for lineno in misc.spaces_tab_errors %}
@@ -145,6 +175,8 @@
 {# Spaces #}
 {% if misc.spaces_trailing_errors %}
   <h2>Trailing spaces</h2>
+  <hr />
+
   <div class='box'>
 	<ul>
 	  {% for lineno in misc.spaces_trailing_errors %}
@@ -157,6 +189,8 @@
 {# Report lines too long (more than 72 characters) #}
 {% if misc.line_length_warning %}
   <h2>Long lines (more than 72 characters)</h2>
+  <hr />
+
   <div class='box'>
 	<ul>
 	  {% for lineno, line, len in misc.line_length_warning %}
@@ -169,6 +203,8 @@
 {# Lines with stars #}
 {% if misc.stars_warning %}
   <h2>Lines containing stars</h2>
+  <hr />
+
    <div class='box'>
 	<ul>
 	  {% for lineno, line in misc.stars_warning %}
@@ -181,6 +217,8 @@
 {# Format markers #}
 {% if misc.format_markers_warning %}
   <h2>Possible format markers left-over</h2>
+  <hr />
+
   <div class='box'>
 	<ul>
 	  {% for lineno, line in misc.format_markers_warning %}
@@ -192,7 +230,8 @@
 
 {# Dates #}
 {% if misc.dates_all %}
-  <h2>All dates</h2>
+  <h2>Some dates</h2>
+  <hr />
 
   {% if misc.dates_year_max != -1 %}
 	<p>Years range: {{ misc.dates_year_min }} to {{ misc.dates_year_max }}</p>
@@ -221,6 +260,8 @@
 {# Misc regexes #}
 {% if misc.misc_regex_result %}
   <h2>Regexes</h2>
+  <hr />
+
   <div class='box'>
     <ul>
 	  {% for r in misc.misc_regex_result %}

@@ -1,3 +1,23 @@
+{#
+ # -*- coding: utf-8 -*-
+
+ # Copyright (C) 2012-2013 bibimbop at pgdp
+
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License
+ # as published by the Free Software Foundation; either version 2
+ # of the License, or (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program; if not, write to the Free Software
+ # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#}
+
 <h1 id="{{ myfile.basename }}">{{ myfile.basename }}</h1>
 
 {% if not myfile.tree %}
@@ -20,7 +40,7 @@
   {# Various global document checks #}
 
   <h2>Overall document</h2>
-  <hr class="brh2" />
+  <hr />
 
   {# Language #}
   {% if x.document_lang or x.document_xmllang %}
@@ -158,7 +178,7 @@
 
   {# Title #}
   <h2>Title of the book</h2>
-  <hr class="brh2" />
+  <hr />
 
   {% if not x.good_format %}
     <p>
@@ -183,7 +203,7 @@
   {% if css.cssutils_errors or css.sel_unchecked or css.sel_unused or css.classes_undefined %}
 
 	<h2>CSS validation</h2>
-	<hr class="brh2" />
+	<hr />
 
 	<p>Note: some notes might be spurious, particularly when the selectors are complex. @media rules are also ignored.</p>
 
@@ -254,7 +274,7 @@
 
   {# Display ePub table of contents #}
   <h2>Table of content as built by ePubmaker</h2>
-  <hr class="brh2" />
+  <hr />
 
   {% if x.num_h1 != 1 %}
 	<p>
@@ -278,7 +298,7 @@
 
   {# Images #}
   <h2>Images</h2>
-  <hr class="brh2" />
+  <hr />
 
   {# Presence and validity of the cover page #}
   <h3>Cover image</h3>
@@ -325,7 +345,7 @@
   {% if x.different_id_name or x.missing_id or x.missing_name or x.bad_hrefs %}
 
 	<h2>Anchors</h2>
-	<hr class="brh2" />
+	<hr />
 
     {# id != name#}
     {% if x.different_id_name %}
@@ -392,7 +412,7 @@
   {# Inconsistencies in internal links to a page number #}
   {% if pages.inconsistencies %}
     <h2>Inconsistencies between links and page numbers</h2>
-	<hr class="brh2" />
+	<hr />
 
     <div class='box'>
 	  <ul>
@@ -406,7 +426,7 @@
 
   {# Footnotes #}
   <h2>Footnotes</h2>
-  <hr class="brh2" />
+  <hr />
 
   {% if pages.note_anchors %}
 	{% set expected_num = 1 %}
@@ -424,7 +444,7 @@
 
   {# Pages numbers #}
   <h2>Page numbers</h2>
-  <hr class="brh2" />
+  <hr />
 
   <h3>Numerical Arabic</h3>
   {% if pages.ranges_num %}
@@ -466,7 +486,7 @@
   {# Dot instead of comma #}
   {% if points.point_matches %}
 	<h2>Possible dot instead of comma. (duplicates, if any, were removed.)</h2>
-	<hr class="brh2" />
+	<hr />
 
 	<div class='box'>
 	  <ul>
@@ -482,7 +502,7 @@
   {# Greek #}
   {% if greek.bad_trans or greek.good_trans %}
 	<h2>Greek transliterrations</h2>
-	<hr class="brh2" />
+	<hr />
 
 	<p>Found {{ (greek.bad_trans + greek.good_trans) | length }} greek transliterations.</p>
 
@@ -510,7 +530,7 @@
   {# Misc regexes #}
   {% if x.misc_regex_result %}
 	<h2>Regexes</h2>
-	<hr class="brh2" />
+	<hr />
 
 	<div class='box'>
       <ul>
