@@ -389,7 +389,14 @@ class KXhtml(object):
             for match in m:
                 self.misc_regex_result.append((desc, match, 0))
 
-        print(self.misc_regex_result)
+
+        # Ensure that quote types are not mixed. If straight quotes
+        # are found, suggest curly quotes. Same for double quotes.
+        self.misc_has_straight_quote = "'" in text
+        self.misc_has_curly_quote = "’" in text
+        self.misc_has_straight_dquote = '"' in text
+        self.misc_has_curly_dquote = '“' in text or '”' in text
+
 
     def check_anchors(self, myfile):
         """Perform check on anchors: id must be equal to name, find

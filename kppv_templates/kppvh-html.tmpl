@@ -544,5 +544,30 @@
 	</div>
   {% endif %}
 
+  {# quotes and double quotes #}
+  {% if x.misc_has_straight_quote or
+	    x.misc_has_straight_dquote or
+	    (x.misc_has_straight_quote and x.misc_has_curly_quote) or
+        (x.misc_has_straight_dquote and x.misc_has_curly_dquote) %}
+	<h2>Quotes and double quotes</h2>
+	<hr />
+
+	{% if x.misc_has_straight_quote %}
+	  <p>Straight quotes found. Use curly?</p>
+	{% endif %}
+
+	{% if x.misc_has_straight_dquote %}
+	  <p>Straight double quotes found. Use curly?</p>
+	{% endif %}
+
+	{% if x.misc_has_straight_quote and x.misc_has_curly_quote %}
+	  <p class='warning'>Found both straight and curly quotes</p>
+	{% endif %}
+
+	{% if x.misc_has_straight_dquote and x.misc_has_curly_dquote %}
+	  <p class='warning'>Found both straight and curly double quotes</p>
+	{% endif %}
+  {% endif %}
+
 {% endif %}
 
