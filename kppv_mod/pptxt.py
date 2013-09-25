@@ -379,14 +379,8 @@ class MiscChecks(object):
         self.guess_language(myfile)
         if self.language == "fr":
             self.find_french_dates(myfile)
-            print("Invalid dates", self.dates_invalid)
-            print("All dates", self.dates_all)
-            print("Years ranges", self.dates_year_min, self.dates_year_max)
         elif self.language == "en":
             self.find_english_dates(myfile)
-            print("Invalid dates", self.dates_invalid)
-            print("All dates", self.dates_all)
-            print("Years ranges", self.dates_year_min, self.dates_year_max)
 
         self.check_empty_lines(myfile)
         self.check_spaces(myfile)
@@ -400,20 +394,7 @@ class MiscChecks(object):
         self.check_indent(myfile)
         self.check_regex(myfile)
 
-#        print("empty lines", self.empty_lines_blocks)
-        print("language", self.language)
-#        print("bad spacing", self.empty_lines_errors)
-        print("tabs", self.spaces_tab_errors)
-#        print("titles", self.titles)
-        print("space trailing", self.spaces_trailing_errors)
-#        print("line length", self.line_length_warning)
-#        print("stars", self.stars_warning)
-        print("specials chars", self.special_chars_warning)
-        print("adjacent spaces", self.adjacent_spaces)
-        print("format markers", self.format_markers_warning)
-        print("low count chars", self.low_count_chars)
-        print("block indents", self.block_indent)
-#        print("regexe", self.misc_regex_result)
+
 
 
 def main():

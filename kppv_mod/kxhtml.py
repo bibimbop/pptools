@@ -354,15 +354,15 @@ class KXhtml(object):
 
         # Find various strings in the content
         self.misc_regex_result = []
-        strings = [ ("unusual ,!", ",!"),
-                    ("unusual ,?", ",?"),
-                    ("[oE]->[oe] or [OE]", "[oE]"),
-                    ("[Oe]->[oe] or [OE]", "[Oe]"),
+        strings = [ ("unusual punctuation", "[,:;][!?]"),
+                    ("[oE]->[oe], [OE] or œ", "[oE]"),
+                    ("[Oe]->[oe], [OE] or Œ", "[Oe]"),
                     ("[ae]->æ", "[ae]"),
                     ("[AE]->Æ", "[AE]"),
                     ("[Blank Page]", "[Blank Page]"),
                     ("degré sign ?", "°"),
                     ("ordinal sign ?", "º"),
+                    ("use ndash instead ?", "\d-\d"),
                     ]
         for element in myfile.tree.find('body').iter():
             for desc, string in strings:
@@ -370,8 +370,6 @@ class KXhtml(object):
                     self.misc_regex_result.append((desc, element.text, element.sourceline))
                 if element.tail and string in element.tail:
                     self.misc_regex_result.append((desc, element.tail, element.sourceline))
-
-        print( self.misc_regex_result)
 
 
     def check_anchors(self, myfile):

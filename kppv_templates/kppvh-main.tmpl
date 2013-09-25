@@ -13,15 +13,19 @@ body {
     margin-right: 5%;
 }
 
-h3 {
-	font-weight: normal;
-}
+h1 { margin-top: 4em; }
+h2 { margin-top: 2em; }
+h3 { font-weight: normal; }
+
+h2 hr { size: 2px; }
 
 /* Box for text */
 .box {
 	font-family: "Courier New",Courier,monospace;
     border: 1px dashed;
-    background-color: #F0FFFF;
+    background-color: #F8FFFF;
+	margin-left: 3em;
+	padding: 1em;
 }
 
 .regex {
@@ -42,16 +46,15 @@ h3 {
 
   <body>
 
-	{% for out in outdata %}
-	  <ul>
-	  <li>{{ out[0] }}</li>
-	  </ul>
+	<p>Files analyzed:</p>
+	<ul>
+	  {% for out in outdata %}
+	  <li><a href="#{{ out[0] }}">{{ out[0] }}</a></li>
 	{% endfor %}
+	</ul>
 
 	{% for out in outdata %}
-	  <hr />
-	  {{ out[1] }}
-	  </p>
+	{{ out[1] }}
 	{% endfor %}
 
   </body>
