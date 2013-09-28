@@ -25,6 +25,18 @@
 
 import os
 from lxml import etree
+import re
+
+def clear_element(element):
+    """In an XHTML tree, remove all sub-elements of a given element.
+
+    We can't properly remove an XML element while traversing the
+    tree. But we can clean it. Remove its text and children. However
+    the tail must be preserved because it belong to the next element,
+    so re-attach."""
+    tail = element.tail
+    element.clear()
+    element.tail = tail
 
 class SourceFile(object):
     """Represent a file in memory. """
@@ -157,6 +169,21 @@ class SourceFile(object):
             self.xhtml=11
         else:
             self.xhtml=0
+
+        # Remove PG boilerplate. These are kept in a <pre> tag.
+        # Remove PG header and footer, 2nd method
+        find = etree.XPath("//pre")
+        for element in find(self.tree):
+            if element.text is None:
+                continue
+
+            text = element.text.strip()
+
+            if re.match(".*?\*\*\* START OF THIS PROJECT GUTENBERG EBOOK.*?\*\*\*(.*)", text, flags=re.MULTILINE | re.DOTALL):
+                clear_element(element)
+
+            elif text.startswith("End of the Project Gutenberg") or text.startswith("End of Project Gutenberg"):
+                clear_element(element)
 
 
     def load_text(self, fname, encoding=None):
