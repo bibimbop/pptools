@@ -358,11 +358,12 @@ class MiscChecks(object):
         # Try various regexes on the text
         text= " ".join(myfile.text)
 
-        regexes = [ ("mdash->dash(?)", "\d+--\d+"),
-                    ("mdash->dash(?)", "v\.--\d+"),
-                    ("mdash->dash(?)", "r\.--\d+"),
-                    (",letter", ",[^\W\d_]+"),
+        regexes = [ ("mdash->dash(?)", r"\d+--\d+"),
+                    ("mdash->dash(?)", r"v\.--\d+"),
+                    ("mdash->dash(?)", r"r\.--\d+"),
+                    (",letter", r",[^\W\d_]+"),
                     ("bad guiguts find/replace?", r"\$\d[^\d][^ ]*\s"),
+                    ("PP tag?", r"\n(/[CFQRPTUX\*#]|[CFQRPTUX\*#]/).*(?=\n)"),
                     ]
 
         for desc, regex in regexes:
