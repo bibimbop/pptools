@@ -332,7 +332,6 @@ class pgdp_file_html(pgdp_file):
         self.mycss = '''
                 i:before, cite:before, em:before, abbr:before, dfn:before,
                 i:after, cite:after, em:after, abbr:after, dfn:after      { content: "_"; }
-                /*b:before, b:after { content: "="; }*/
 
                 /* line breaks with <br /> will be ignored by
                  *  normalize-space(). Add a space in all of them to work
@@ -371,6 +370,9 @@ class pgdp_file_html(pgdp_file):
             self.mycss += ".smcap { text-transform:lowercase; }"
         elif args.css_smcap == 'T':
             self.mycss += ".smcap { text-transform:title; }"
+
+        if args.css_bold:
+            self.mycss += "b:before, b:after { content: " + args.css_bold + "; }"
 
         # --css can be present multiple times, so it's a list.
         for css in args.css:
@@ -1041,6 +1043,8 @@ if __name__ == '__main__':
                         help="Suppress non-breakable spaces between numbers")
     parser.add_argument('--css-smcap', type=str, default=None,
                         help="HTML: Transform small caps into uppercase (U), lowercase (L) or title (T)")
+    parser.add_argument('--css-bold', type=str, default=None,
+                        help="HTML: Surround bold strings with this string")
     parser.add_argument('--css', type=str, default=[], action='append',
                         help="HTML: Insert transformation CSS")
     parser.add_argument('--suppress-proofers-notes', action='store_true', default=False,
