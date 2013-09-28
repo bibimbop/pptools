@@ -381,12 +381,17 @@ class KXhtml(object):
 
         # Try various regexes on the text
         text = etree.XPath("string(//body)")(myfile.tree)
-        regexes = [ ("mdash->dash(?)", "\d+--\d+"),
-                    ("mdash->dash(?)", "v\.--\d+"),
-                    ("mdash->dash(?)", "r\.--\d+"),
+        regexes = [ ("mdash->ndash(?)", "\d+--\d+"),
+                    ("mdash->ndash(?)", "[rv]\.--\d+"), # recto/verso
+
+                    ("dash->ndash(?)", "\d+-\d+"),
+                    ("mdash->ndash(?)", "\b[rv]\.—\d+"), # recto/verso
+
+                    ("mdash->ndash(?)", "\d+—\d+"),
+                    ("mdash->ndash(?)", "\b[rv]\.—\d+"), # recto/verso
+
                     (",letter", ",[^\W\d_]+"),
                     ("bad guiguts find/replace?", r"\$\d[^\d][^ ]*\s"),
-                    ("use ndash instead ?", r"\d+-\d+"),
                     ]
         # Find all matches, and add them
         for desc, regex in regexes:
