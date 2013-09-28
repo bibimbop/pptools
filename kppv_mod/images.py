@@ -52,6 +52,22 @@ class KImages(object):
                     if self.coverpage != img.attrib['src']:
                         self.errors.append((img.sourceline, "different cover image declared than in the head (" + self.coverpage + " and " + img.attrib['src'] + ")"))
 
+
+            # images should have a alt attribute but no title.
+            #
+            # hdmtrad: On nous demande une brève description pour «alt»
+            # (principalement pour les versions audio éventuelles), mais
+            # il n'est pas nécessaire de répéter la description dans
+            # «title» (en «audio» on les entendrez deux fois). En
+            # principe, nous ne mentionnons même plus le «title».
+            if 'alt' not in img.attrib:
+                self.errors.append((img.sourceline, "missing 'alt' attribute to 'img'"))
+            elif len(img.attrib['alt']) > 40:
+                self.errors.append((img.sourceline, "'alt' attribute too long? (" + str(len(img.attrib['alt'] > 40)) + " characters"))
+
+            if "title" in img.attrib:
+                 self.errors.append((img.sourceline, "'title' attribute found in 'img'. Remove?"))
+
         # Check whether coverpage in jpeg
         if self.coverpage:
             self.coverpage_invalid_ext = not self.coverpage.endswith(('.jpg', '.jpeg'))
