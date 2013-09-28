@@ -345,6 +345,7 @@ class MiscChecks(object):
                     ("space then ponctuation", " »"),
                     ("space then ponctuation", " '"),
                     ("space then ponctuation", " ’"),
+                    ("dp marker?", "-*"),
                     ]
 
         for lineno, line in enumerate(myfile.text, start=myfile.start+1):

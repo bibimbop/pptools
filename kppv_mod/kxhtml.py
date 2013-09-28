@@ -370,6 +370,7 @@ class KXhtml(object):
                     ("space then ponctuation", " »"),
                     ("space then ponctuation", " '"),
                     ("space then ponctuation", " ’"),
+                    ("dp marker?", "-*"),
                     ]
         for element in myfile.tree.find('body').iter():
             for desc, string in strings:
