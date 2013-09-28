@@ -363,6 +363,13 @@ class KXhtml(object):
                     ("[Blank Page]", "[Blank Page]"),
                     ("degré sign ?", "°"),
                     ("ordinal sign ?", "º"),
+                    ("space then ponctuation", " ."),
+                    ("space then ponctuation", " ,"),
+                    ("space then ponctuation", " ;"),
+                    ("space then ponctuation", " ]"),
+                    ("space then ponctuation", " »"),
+                    ("space then ponctuation", " '"),
+                    ("space then ponctuation", " ’"),
                     ]
         for element in myfile.tree.find('body').iter():
             for desc, string in strings:

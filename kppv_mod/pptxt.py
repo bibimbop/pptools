@@ -338,6 +338,13 @@ class MiscChecks(object):
                     ("[Blank Page]", "[Blank Page]"),
                     ("degré sign ?", "°"),
                     ("ordinal sign ?", "º"),
+                    ("space then ponctuation", " ."),
+                    ("space then ponctuation", " ,"),
+                    ("space then ponctuation", " ;"),
+                    ("space then ponctuation", " ]"),
+                    ("space then ponctuation", " »"),
+                    ("space then ponctuation", " '"),
+                    ("space then ponctuation", " ’"),
                     ]
 
         for lineno, line in enumerate(myfile.text, start=myfile.start+1):
