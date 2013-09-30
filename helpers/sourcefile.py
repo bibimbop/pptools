@@ -171,7 +171,6 @@ class SourceFile(object):
             self.xhtml=0
 
         # Remove PG boilerplate. These are kept in a <pre> tag.
-        # Remove PG header and footer, 2nd method
         find = etree.XPath("//pre")
         for element in find(self.tree):
             if element.text is None:
@@ -184,7 +183,6 @@ class SourceFile(object):
 
             elif text.startswith("End of the Project Gutenberg") or text.startswith("End of Project Gutenberg"):
                 clear_element(element)
-
 
     def load_text(self, fname, encoding=None):
         """Load the file as text."""

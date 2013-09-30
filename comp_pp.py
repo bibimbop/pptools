@@ -338,22 +338,11 @@ class pgdp_file_html(pgdp_file):
                  *  around. */
                 br:before { content: " "; }
 
-                /* greek: if there is a title, use it to replace the greek. */
-                body *[lang=grc] { _replace_with_attr: "title"; }
-                body *[lang=grc]:before, body *[lang=grc]:after { content: "+"; }
-
                 /* Remove nbsp within numbers. eg 20&nbsp000 becomes 20000.
                 body * { _replace_regex: "(\\d)\\u00A0(\\d)" "\\1\\2" }*/
 
                 /* Add spaces around td tags. */
                 td:after, td:after { content: " "; }
-
-                /* temp */
-                /*small { text-transform:uppercase; }
-                  div.figcenter:before { content: "[Illustration:" }
-                  div.figcenter:after { content: "]" }
-                  .smcapn {  text-transform:uppercase; }
-                */
         '''
 
 
@@ -374,12 +363,19 @@ class pgdp_file_html(pgdp_file):
         if args.css_bold:
             self.mycss += "b:before, b:after { content: " + args.css_bold + "; }"
 
+        if args.css_greek_title_plus:
+            # greek: if there is a title, use it to replace the greek. */
+            self.mycss += 'body *[lang=grc] { _replace_with_attr: "title"; }'
+            self.mycss += 'body *[lang=grc]:before, body *[lang=grc]:after { content: "+"; }'
+
+        if args.css_add_illustration:
+            for figclass in [ 'figcenter', 'figleft', 'figright' ]:
+                self.mycss += '.' + figclass + ':before { content: "[Illustration: "; }'
+                self.mycss += '.' + figclass + ':after { content: "]"; }'
+
         # --css can be present multiple times, so it's a list.
         for css in args.css:
             self.mycss += css
-
-
-
 
 
     def analyze(self):
@@ -952,6 +948,8 @@ def main():
     check_char(files, "¾", "-3/4")
     check_char(files, '”', '"')
     check_char(files, '“', '"')
+    check_char(files, '⁄', '/') # fraction
+
 
 
 
@@ -1051,6 +1049,11 @@ if __name__ == '__main__':
                         help="In Px/Fx versions, remove [**proofreaders notes]")
     parser.add_argument('--regroup-split-words', action='store_true', default=False,
                         help="In Px/Fx versions, regroup split wo-* *rds")
+    parser.add_argument('--css-greek-title-plus', action='store_true', default=False,
+                        help="HTML: use greek transliteration in title attribute")
+    parser.add_argument('--css-add-illustration', action='store_true', default=False,
+                        help="HTML: add [Illustration ] tag")
+
 
     args = parser.parse_args()
 
