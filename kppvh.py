@@ -161,8 +161,8 @@ def main():
 
     args = parser.parse_args()
 
-    # Keep the files. 1st=pgdp, 2nd=text, 3rd=xhtml
-    files = {}
+    # Keep the files.
+    files = []
 
     for fname in args.filename:
 
@@ -179,10 +179,6 @@ def main():
             print("Error: couldn't find type of file " + fname)
             return
 
-        if files.get(ftype):
-            print("Error: a file of the same type as", fname, "already exists")
-            return
-
         myfile = sourcefile.SourceFile()
 
         if ftype == 'html':
@@ -196,25 +192,20 @@ def main():
 
         myfile.outname = None
 
-        files[ftype] = myfile
+        files.append((ftype, myfile))
 
 
     kppvh = Kppvh()
 
     outdata = []
 
-    myfile_text = files.get('text', None)
-    if myfile_text:
-        outdata.append(kppvh.process_text(myfile_text))
-
-    myfile_html = files.get('html', None)
-    if myfile_html:
-        outdata.append(kppvh.process_html(myfile_html))
-
-    myfile_pgdp = files.get('pgdp', None)
-    if myfile_pgdp:
-        outdata.append(kppvh.process_pgdp(myfile_pgdp))
-
+    for ftype, myfile in files:
+        if ftype == 'text':
+            outdata.append(kppvh.process_text(myfile))
+        elif ftype == 'html':
+            outdata.append(kppvh.process_html(myfile))
+        elif ftype == 'pgdp':
+            outdata.append(kppvh.process_pgdp(myfile))
 
     # Write all the nice report tree we've been building
     # todo - no need to call Environment several times
