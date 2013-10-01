@@ -938,7 +938,7 @@ def main():
     # How to process oe ligature
     check_oelig(files)
 
-    # How to process ponctuation
+    # How to process punctuation
     check_char(files, "’", "'") # curly quote to straight
     check_char(files, "‘", "'") # curly quote to straight
     check_char(files, "º", "o") # ordinal to letter o
