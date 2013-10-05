@@ -62,7 +62,7 @@ class KImages(object):
             # principe, nous ne mentionnons même plus le «title».
             if 'alt' not in img.attrib:
                 self.errors.append((img.sourceline, "missing 'alt' attribute to 'img'"))
-            elif len(img.attrib['alt']) > 40:
+            elif len(img.attrib['alt']) > 50:
                 self.errors.append((img.sourceline, "'alt' attribute too long? (" + str(len(img.attrib['alt'])) + " characters)"))
 
             if "title" in img.attrib:
