@@ -38,7 +38,7 @@ packages:
 Installation
 ------------
 
-On Debian /  DUbuntu
+On Debian /  Ubuntu
 ~~~~~~~~~~~~~~~~~~~~
 
 To install on Linux (Debian or Ubuntu):
@@ -58,6 +58,57 @@ then install the missing packages:
 
   pip3 install tinycss
   pip3 install cssselect
+
+
+On RedHat EL 6, CentOS 6, Scientific Linux 6
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Follow the procedures mentionned at
+
+  http://linuxsysconfig.com/2013/03/running-multiple-python-versions-on-centos6rhel6sl6/
+
+and
+
+  http://wiki.centos.org/AdditionalResources/Repositories/RPMForge
+
+to setup the PUIAS and RPMforge repositories.
+
+Then install python 3 and dependencies:
+::
+
+  yum install python3  python3-tools  python3-devel
+  yum install dwdiff
+
+  wget http://python-distribute.org/distribute_setup.py
+  python3 distribute_setup.py
+  easy_install pip
+  pip-3.3 install tinycss
+  pip-3.3 install cssselect
+  pip-3.3 install lxml
+  pip-3.3 install roman
+  pip-3.3 install cssutils
+  pip-3.3 install jinja2
+
+Note that pip requires gcc to build modules, so that may have to be installed too.
+
+
+On Fedora 19
+~~~~~~~~~~~~
+
+To install, type:
+::
+
+  yum install python3  python3-tools  python3-devel dwdiff
+  wget http://python-distribute.org/distribute_setup.py
+  python3 distribute_setup.py
+  easy_install pip
+  pip-3.3 install tinycss
+  pip-3.3 install cssselect
+  yum install libxml2-devel libxslt-devel
+  pip-3.3 install lxml
+  pip-3.3 install roman
+  pip-3.3 install cssutils
+  pip-3.3 install jinja2
 
 
 On anything else (Windows, OSX, ...)
