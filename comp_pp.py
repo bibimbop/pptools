@@ -949,8 +949,9 @@ def main():
     check_char(files, '”', '"')
     check_char(files, '“', '"')
     check_char(files, '⁄', '/') # fraction
-
-
+    check_char(files, "′", "'") # prime
+    check_char(files, "″", "''") # double prime
+    check_char(files, "‴", "'''") # triple prime
 
 
 
