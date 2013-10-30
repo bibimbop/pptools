@@ -368,8 +368,11 @@ class KXhtml(object):
                     ("space then punctuation", " ;"),
                     ("space then punctuation", " ]"),
                     ("space then punctuation", " »"),
-                    ("space then punctuation", " '"),
-                    ("space then punctuation", " ’"),
+                    ("space then punctuation", " ?"),
+                    ("space then punctuation", " !"),
+                    ("space then punctuation", " :"),
+                    #("space then punctuation", " '"),
+                    #("space then punctuation", " ’"),
                     ("dp marker?", "-*"),
                     ]
         for element in myfile.tree.find('body').iter():

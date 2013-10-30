@@ -343,8 +343,11 @@ class MiscChecks(object):
                     ("space then punctuation", " ;"),
                     ("space then punctuation", " ]"),
                     ("space then punctuation", " »"),
-                    ("space then punctuation", " '"),
-                    ("space then punctuation", " ’"),
+                    ("space then punctuation", " ?"),
+                    ("space then punctuation", " !"),
+                    ("space then punctuation", " :"),
+                    #("space then punctuation", " '"),
+                    #("space then punctuation", " ’"),
                     ("dp marker?", "-*"),
                     ]
 
