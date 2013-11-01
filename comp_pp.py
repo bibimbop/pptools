@@ -855,7 +855,7 @@ Inserted words that were in the second file but not in the first will appear <sp
 
 
 def check_char(files, char_best, char_other):
-    """Check whether each file a the best character. If not, add a
+    """Check whether each file has a the best character. If not, add a
     conversion request.
 
     This is used for instance if one version uses ’ while the other
@@ -866,7 +866,7 @@ def check_char(files, char_best, char_other):
     in_0 = files[0].char_text.find(char_best)
     in_1 = files[1].char_text.find(char_best)
 
-    if in_0 > 0 and in_1 > 0:
+    if in_0 >= 0 and in_1 >= 0:
         # Both have it
         return
 
