@@ -624,8 +624,8 @@ class pgdp_file_html(pgdp_file):
                 fn[1] = func(fn[1])
 
         # zero width space
-        #if args.ignore_0_space:
-        #    self.text = self.text.replace(chr(0x200b), "")
+        if args.ignore_0_space:
+            self.text = self.text.replace(chr(0x200b), "")
 
 
 
