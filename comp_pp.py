@@ -241,7 +241,7 @@ class pgdp_file_text(pgdp_file):
                 in_fnote = False
                 continue
 
-            if (line.endswith(".]") or line.endswith("]]") or line.endswith("»]") or line.endswith(" ]")) and in_fnote:
+            if line.endswith((".]", "]]", "»]", " ]", ")]", "_]", "-]", "—]")) and in_fnote:
                 cur_fnote[1] += "\n" + line
                 self.footnotes.append(cur_fnote)
 
@@ -271,7 +271,7 @@ class pgdp_file_text(pgdp_file):
                 cur_fnote = [ m.group(2), m.group(3) ]
                 indent_fnote = len(m.group(1))
 
-                if (line.endswith(".]") or line.endswith("]]")) and in_fnote:
+                if line.endswith((".]", "]]", "»]", " ]", ")]", "_]", "-]", "—]")) and in_fnote:
                     self.footnotes.append(cur_fnote)
                     in_fnote = False
                     continue
