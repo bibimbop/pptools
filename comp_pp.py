@@ -328,10 +328,22 @@ class pgdp_file_html(pgdp_file):
     def __init__(self):
         super().__init__()
 
+        self.mycss = ""
+
+    def load(self, filename):
+        """Load the file"""
+        self.myfile.load_xhtml(filename)
+
+
+    def process_args(self, args):
         # Load default CSS for transformations
-        self.mycss = '''
+        if args.css_no_default == False:
+            self.mycss = '''
                 i:before, cite:before, em:before, abbr:before, dfn:before,
                 i:after, cite:after, em:after, abbr:after, dfn:after      { content: "_"; }
+
+                /* Small caps */
+                .smcap { text-transform:uppercase; }"
 
                 /* line breaks with <br /> will be ignored by
                  *  normalize-space(). Add a space in all of them to work
@@ -343,15 +355,8 @@ class pgdp_file_html(pgdp_file):
 
                 /* Add spaces around td tags. */
                 td:after, td:after { content: " "; }
-        '''
+            '''
 
-
-    def load(self, filename):
-        """Load the file"""
-        self.myfile.load_xhtml(filename)
-
-
-    def process_args(self, args):
         """Process command line arguments"""
         if args.css_smcap == 'U':
             self.mycss += ".smcap { text-transform:uppercase; }"
@@ -1054,6 +1059,8 @@ if __name__ == '__main__':
                         help="HTML: use greek transliteration in title attribute")
     parser.add_argument('--css-add-illustration', action='store_true', default=False,
                         help="HTML: add [Illustration ] tag")
+    parser.add_argument('--css-no-default', action='store_true', default=False,
+                        help="HTML: do not use default transformation CSS")
 
 
     args = parser.parse_args()
