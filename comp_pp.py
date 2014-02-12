@@ -469,6 +469,7 @@ class pgdp_file_html(pgdp_file):
             f_replace_with_attr = None
             f_replace_regex = None
             f_text_replace = None
+            f_element_func = None
 
             for val in rule.declarations:
 
@@ -491,6 +492,10 @@ class pgdp_file_html(pgdp_file):
                     v1 = val.value[0].value
                     v2 = val.value[2].value
                     f_text_replace = lambda x: x.replace(v1, v2)
+
+                elif val.name == "display":
+                    # Support display none only. So ignore "none" argument.
+                    f_element_func = clear_element
 
 #                elif val.name == "_replace_regex":
 #                    f_replace_regex = partial(re.sub, r"(\d)\u00A0(\d)", r"\1\2")
@@ -522,6 +527,8 @@ class pgdp_file_html(pgdp_file):
                         if f_text_replace:
                             self.text_apply(element, f_text_replace)
 
+                        if f_element_func:
+                            f_element_func(element)
 
                        # if f_replace_regex and element.text:
                        #     element.text = f_replace_regex(element.text)
