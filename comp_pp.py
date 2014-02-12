@@ -749,6 +749,8 @@ def create_html(files, text, footnotes, footnotes_errors):
         text = text.replace("]COMPPP_START_INS[", "<span class='start_ins'>")
         text = text.replace("]COMPPP_STOP_INS[", "</span>")
 
+        if text:
+            text = "<hr /><pre>\n" + text
         text = text.replace("\n--\n", "\n</pre><hr /><pre>\n")
 
         text = re.sub(r"^\s*(\d+):(\d+)",
@@ -815,6 +817,15 @@ body {
     max-width: 50em;
 }
 .center { text-align:center; }
+
+/* Use a CSS counter to number each diff. */
+body {
+  counter-reset: diff;  /* set diff counter to 0 */
+}
+hr:before {
+  counter-increment: diff; /* inc the diff counter ... */
+  content: "Diff " counter(diff) ": "; /* ... and display it */
+}
     </style>
   </head>
 <body>
