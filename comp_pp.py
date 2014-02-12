@@ -322,6 +322,11 @@ class pgdp_file_text(pgdp_file):
         for func in self.transform_func:
             self.text = func(self.text)
 
+        # Apply transform function to the footnotes
+        for fn in self.footnotes:
+            for func in self.transform_func:
+                fn[1] = func(fn[1])
+
 
 class pgdp_file_html(pgdp_file):
 
