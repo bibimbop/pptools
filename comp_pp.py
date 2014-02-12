@@ -981,6 +981,10 @@ def main():
         files[0].transform_func.append(func)
         files[1].transform_func.append(func)
 
+    # Suppress shy (soft hyphen)
+    func = lambda text: re.sub(r"\u00AD", r"", text)
+    files[0].transform_func.append(func)
+    files[1].transform_func.append(func)
 
     # If the original encoding of them is latin1, we must convert a
     # few UTF8 characters. We assume the default is utf-8. No
