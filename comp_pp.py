@@ -759,8 +759,13 @@ def create_html(files, text, footnotes, footnotes_errors):
         return text
 
     # Find the number of diff sections
-    nb_diffs_text = len(re.findall("\n--\n", text))
-    nb_diffs_footnotes = len(re.findall("\n--\n", footnotes or ""))
+    nb_diffs_text = 0
+    if text:
+        nb_diffs_text = len(re.findall("\n--\n", text)) + 1
+
+    nb_diffs_footnotes = 0
+    if footnotes:
+        nb_diffs_footnotes = len(re.findall("\n--\n", footnotes or "")) + 1
 
     # Text, with correct (?) line numbers
     text = massage_input(text, files[0].start_line, files[1].start_line)
