@@ -837,6 +837,8 @@ Inserted words that were in the second file but not in the first will appear <sp
 </p>
 </div>
 
+<p>Custom CSS added on command line: """ + " ".join(args.css) + """</p>
+
 """)
 
     print("<p>There is " + str(nb_diffs_text) + " diff sections in the main text</p>")
