@@ -355,6 +355,15 @@ class pgdp_file_html(pgdp_file):
 
                 /* Add spaces around td tags. */
                 td:after, td:after { content: " "; }
+
+                /* Remove page numbers. It seems every PP has a different way. */
+                span[class^="pagenum"] { display: none }
+                p[class^="pagenum"] { display: none }
+                p[class^="page"] { display: none }
+                span[class^="pgnum"] { display: none }
+                div[id^="Page_"] { display: none }
+                div[class^="pagenum"] { display: none }
+
             '''
 
         """Process command line arguments"""
@@ -420,18 +429,6 @@ class pgdp_file_html(pgdp_file):
 
             if text.startswith("End of the Project Gutenberg") or text.startswith("End of Project Gutenberg"):
                 clear_element(element)
-
-        # Remove page numbers. It seems every PP has a different way.
-        for find in [ "//span[starts-with(@class, 'pagenum')]",
-                      "//p[starts-with(@class, 'pagenum')]",
-                      "//span[starts-with(@class, 'page')]",
-                      "//span[starts-with(@class, 'pgnum')]",
-                      "//div[starts-with(@id, 'Page_')]",
-                      "//div[starts-with(@class, 'pagenum')]",
-                      ]:
-            for element in etree.XPath(find)(self.myfile.tree):
-                clear_element(element)
-
 
         # Cleaning is done.
 
