@@ -435,6 +435,17 @@ class pgdp_file_html(pgdp_file):
             if text.startswith("End of the Project Gutenberg") or text.startswith("End of Project Gutenberg"):
                 clear_element(element)
 
+        # Remove PG footer, 3rd method -- header and footer are normal
+        # html, not text in <pre> tag.
+        try:
+            # Look for one element
+            (element,) = etree.XPath("//p[@id='pg-end-line']")(self.myfile.tree)
+            while element is not None:
+                clear_element(element)
+                element = element.getnext()
+        except ValueError:
+            pass
+
         # Cleaning is done.
 
         # Transform html into text for character search.
