@@ -377,7 +377,7 @@ class pgdp_file_html(pgdp_file):
         elif args.css_smcap == 'L':
             self.mycss += ".smcap { text-transform:lowercase; }"
         elif args.css_smcap == 'T':
-            self.mycss += ".smcap { text-transform:title; }"
+            self.mycss += ".smcap { text-transform:capitalize; }"
 
         if args.css_bold:
             self.mycss += "b:before, b:after { content: " + args.css_bold + "; }"
